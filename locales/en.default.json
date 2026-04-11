@@ -1,4 +1,77 @@
 {
+  "general": {
+    "header": "Header",
+    "typography": "Typography",
+    "fonts": "Fonts",
+    "primary": "Primary font",
+    "colors": "Colors",
+    "layout": "Layout",
+    "spacing": "Spacing",
+    "text": "Text",
+    "group": "Group",
+    "custom_section": "Custom section",
+    "column": "Column",
+    "row": "Row"
+  },
+  "labels": {
+    "menu": "Navigation menu",
+    "customer_account_menu": "Customer account menu",
+    "background": "Background color",
+    "foreground": "Foreground color",
+    "color_primary": "Primary color",
+    "color_secondary": "Secondary color",
+    "color_accent": "Accent color",
+    "color_dark_bg": "Dark background color",
+    "color_text_light": "Light text color",
+    "page_width": "Page width",
+    "page_margin": "Page margin",
+    "input_corner_radius": "Input corner radius",
+    "font_size_base": "Base font size",
+    "space_xs": "Spacing XS",
+    "space_sm": "Spacing SM",
+    "space_md": "Spacing MD",
+    "space_lg": "Spacing LG",
+    "space_xl": "Spacing XL",
+    "text": "Text",
+    "text_style": "Text style",
+    "alignment": "Alignment",
+    "layout_direction": "Layout direction",
+    "padding": "Padding"
+  },
+  "options": {
+    "page_width": {
+      "narrow": "Narrow (90rem)",
+      "wide": "Wide (110rem)"
+    },
+    "text_style": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "normal": "Normal"
+    },
+    "alignment": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    }
+  },
+  "header": {
+    "logo": "Logo",
+    "nav_label": "Main navigation",
+    "nav_home": "Home",
+    "nav_collections": "Collections",
+    "nav_about": "About us",
+    "nav_journals": "Journals",
+    "cart": "Cart",
+    "cart_count": "Cart ({{ count }} items)",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu"
+  },
   "404": {
     "title": "404",
     "not_found": "Page not found.",

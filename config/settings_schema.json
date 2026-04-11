@@ -17,8 +17,65 @@
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
+        "default": "inter_n4",
         "label": "t:general.primary"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "min": 14,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "t:labels.font_size_base",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "t:general.colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "default": "#FFFFFF",
+        "label": "t:labels.background"
+      },
+      {
+        "type": "color",
+        "id": "color_foreground",
+        "default": "#1A1A1A",
+        "label": "t:labels.foreground"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "default": "#1A1A1A",
+        "label": "t:labels.color_primary"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "default": "#F5F5F0",
+        "label": "t:labels.color_secondary"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "default": "#C8A96E",
+        "label": "t:labels.color_accent"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_bg",
+        "default": "#1A1A1A",
+        "label": "t:labels.color_dark_bg"
+      },
+      {
+        "type": "color",
+        "id": "color_text_light",
+        "default": "#FFFFFF",
+        "label": "t:labels.color_text_light"
       }
     ]
   },
@@ -39,7 +96,7 @@
             "label": "t:options.page_width.wide"
           }
         ],
-        "default": "90rem"
+        "default": "110rem"
       },
       {
         "type": "range",
@@ -49,24 +106,7 @@
         "step": 1,
         "unit": "px",
         "label": "t:labels.page_margin",
-        "default": 20
-      }
-    ]
-  },
-  {
-    "name": "t:general.colors",
-    "settings": [
-      {
-        "type": "color",
-        "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
-      },
-      {
-        "type": "color",
-        "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
+        "default": 24
       },
       {
         "type": "range",
@@ -76,7 +116,62 @@
         "step": 1,
         "unit": "px",
         "label": "t:labels.input_corner_radius",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "t:general.spacing",
+    "settings": [
+      {
+        "type": "range",
+        "id": "space_xs",
+        "min": 4,
+        "max": 12,
+        "step": 2,
+        "unit": "px",
+        "label": "t:labels.space_xs",
         "default": 4
+      },
+      {
+        "type": "range",
+        "id": "space_sm",
+        "min": 8,
+        "max": 24,
+        "step": 4,
+        "unit": "px",
+        "label": "t:labels.space_sm",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "space_md",
+        "min": 16,
+        "max": 48,
+        "step": 4,
+        "unit": "px",
+        "label": "t:labels.space_md",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "space_lg",
+        "min": 32,
+        "max": 96,
+        "step": 8,
+        "unit": "px",
+        "label": "t:labels.space_lg",
+        "default": 48
+      },
+      {
+        "type": "range",
+        "id": "space_xl",
+        "min": 64,
+        "max": 160,
+        "step": 8,
+        "unit": "px",
+        "label": "t:labels.space_xl",
+        "default": 96
       }
     ]
   }

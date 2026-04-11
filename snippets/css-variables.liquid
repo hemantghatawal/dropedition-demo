@@ -1,18 +1,55 @@
 {% style %}
-  {% # Loads all font variantions with display: swap %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    /* Typography */
+    --font-primary: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --font-primary--style: {{ settings.type_primary_font.style }};
     --font-primary--weight: {{ settings.type_primary_font.weight }};
-    --page-width: {{ settings.max_page_width }};
+    --font-size-base: {{ settings.font_size_base }}px;
+    --font-size-xs:   calc(var(--font-size-base) * 0.75);
+    --font-size-sm:   calc(var(--font-size-base) * 0.875);
+    --font-size-md:   var(--font-size-base);
+    --font-size-lg:   calc(var(--font-size-base) * 1.25);
+    --font-size-xl:   calc(var(--font-size-base) * 1.5);
+    --font-size-2xl:  calc(var(--font-size-base) * 2);
+    --font-size-3xl:  calc(var(--font-size-base) * 3);
+    --font-size-4xl:  calc(var(--font-size-base) * 4);
+    --font-weight-regular: 400;
+    --font-weight-medium:  500;
+    --font-weight-bold:    700;
+
+    /* Colors */
+    --color-bg:         {{ settings.color_background }};
+    --color-fg:         {{ settings.color_foreground }};
+    --color-primary:    {{ settings.color_primary }};
+    --color-secondary:  {{ settings.color_secondary }};
+    --color-accent:     {{ settings.color_accent }};
+    --color-dark-bg:    {{ settings.color_dark_bg }};
+    --color-text-light: {{ settings.color_text_light }};
+
+    /* Legacy aliases (keep existing theme working) */
+    --color-background: {{ settings.color_background }};
+    --color-foreground: {{ settings.color_foreground }};
+
+    /* Spacing */
+    --space-xs: {{ settings.space_xs }}px;
+    --space-sm: {{ settings.space_sm }}px;
+    --space-md: {{ settings.space_md }}px;
+    --space-lg: {{ settings.space_lg }}px;
+    --space-xl: {{ settings.space_xl }}px;
+
+    /* Layout */
+    --page-width:  {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    --radius:      {{ settings.input_corner_radius }}px;
+
+    /* Transitions */
+    --transition-fast:   150ms ease;
+    --transition-base:   300ms ease;
+    --transition-slow:   600ms ease;
   }
 {% endstyle %}

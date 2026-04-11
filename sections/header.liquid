@@ -1,61 +1,288 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
-
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      <shopify-account menu="{{ section.settings.customer_account_menu }}">
-        {{ 'icon-account.svg' | inline_asset_content }}
-      </shopify-account>
-    {% endif %}
-
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
-
-      {{ 'icon-cart.svg' | inline_asset_content }}
+<header class="site-header" id="site-header">
+  <div class="site-header__inner">
+    {%- comment -%} Logo {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="site-header__logo" aria-label="{{ shop.name | escape }}">
+      {{- shop.name -}}
     </a>
+
+    {%- comment -%} Desktop nav {%- endcomment -%}
+    <nav class="site-header__nav" aria-label="{{ 'header.nav_label' | t }}">
+      {%- for link in section.settings.menu.links -%}
+        <a
+          href="{{ link.url }}"
+          class="site-header__nav-link{% if link.active %} is-active{% endif %}"
+        >
+          {{- link.title -}}
+        </a>
+      {%- endfor -%}
+    </nav>
+
+    {%- comment -%} Icons {%- endcomment -%}
+    <div class="site-header__icons">
+      {%- comment -%} Wishlist placeholder {%- endcomment -%}
+      <button class="site-header__icon-btn" aria-label="{{ 'header.wishlist' | t }}">
+        <svg width="38" height="36" viewBox="0 0 38 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32.9327 20.1518L21.5504 32.4948C20.7957 33.3128 19.7723 33.7722 18.7053 33.7722C17.6382 33.7722 16.6148 33.3128 15.8602 32.4948L4.47785 20.154C3.53694 19.1428 2.78952 17.94 2.2785 16.6147C1.76748 15.2895 1.50293 13.8678 1.50002 12.4314C1.49712 10.995 1.75593 9.57211 2.26159 8.24444C2.76725 6.91676 3.50981 5.71044 4.44663 4.69474C5.38344 3.67904 6.49607 2.87396 7.72064 2.32572C8.9452 1.77748 10.2576 1.49688 11.5824 1.50003C12.9073 1.50317 14.2185 1.79 15.4409 2.34405C16.6632 2.8981 17.7726 3.70846 18.7053 4.7286C20.5998 2.72569 23.1458 1.61267 25.7919 1.63065C28.4379 1.64862 30.9709 2.79615 32.8421 4.82463C34.7133 6.85312 35.7721 9.59923 35.7891 12.4681C35.806 15.3369 34.7798 18.0975 32.9327 20.1518Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      {%- comment -%} Cart {%- endcomment -%}
+      <a
+        href="{{ routes.cart_url }}"
+        class="site-header__icon-btn site-header__cart"
+        aria-label="{{ 'header.cart' | t }}"
+      >
+        {%- if cart.item_count > 0 -%}
+          <span class="site-header__cart-count" aria-label="{{ 'header.cart_count' | t: count: cart.item_count }}">
+            {{- cart.item_count -}}
+          </span>
+        {%- endif -%}
+        <svg width="34" height="38" viewBox="0 0 34 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.53451 11.0248H28.4054C28.9871 11.0247 29.5619 11.1435 30.0904 11.3728C30.6189 11.6022 31.0886 11.9368 31.4674 12.3537C31.8462 12.7706 32.125 13.2599 32.2848 13.7881C32.4445 14.3163 32.4815 14.8709 32.3931 15.4138L29.8617 30.943C29.642 32.2926 28.9179 33.5232 27.8205 34.4122C26.7231 35.3011 25.325 35.7896 23.8793 35.7892H10.0587C8.61328 35.7892 7.21565 35.3005 6.1187 34.4116C5.02174 33.5227 4.29793 32.2923 4.07823 30.943L1.54687 15.4138C1.45846 14.8709 1.49542 14.3163 1.6552 13.7881C1.81498 13.2599 2.09381 12.7706 2.47257 12.3537C2.85134 11.9368 3.32108 11.6022 3.84958 11.3728C4.37809 11.1435 4.95287 11.0247 5.53451 11.0248Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.9177 16.7397V7.21487C10.9177 5.69919 11.5552 4.24559 12.69 3.17385C13.8248 2.1021 15.3639 1.5 16.9688 1.5C18.5736 1.5 20.1127 2.1021 21.2475 3.17385C22.3823 4.24559 23.0198 5.69919 23.0198 7.21487V16.7397" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      {%- comment -%} Account {%- endcomment -%}
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="site-header__icon-btn" aria-label="{{ 'header.account' | t }}">
+          <svg width="42" height="38" viewBox="0 0 42 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 31.5031C1.5 29.2296 2.5094 27.0492 4.30616 25.4416C6.10291 23.8339 8.53983 22.9308 11.0808 22.9308H30.2425C32.7835 22.9308 35.2204 23.8339 37.0171 25.4416C38.8139 27.0492 39.8233 29.2296 39.8233 31.5031C39.8233 32.6399 39.3186 33.7301 38.4202 34.5339C37.5218 35.3377 36.3034 35.7893 35.0329 35.7893H6.29041C5.01991 35.7893 3.80145 35.3377 2.90308 34.5339C2.0047 33.7301 1.5 32.6399 1.5 31.5031Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M20.6617 14.3585C24.6302 14.3585 27.8473 11.48 27.8473 7.92923C27.8473 4.37847 24.6302 1.5 20.6617 1.5C16.6932 1.5 13.4761 4.37847 13.4761 7.92923C13.4761 11.48 16.6932 14.3585 20.6617 14.3585Z" stroke="currentColor" stroke-width="3"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+      {%- comment -%} Mobile hamburger {%- endcomment -%}
+      <button
+        class="site-header__icon-btn site-header__hamburger"
+        aria-label="{{ 'header.menu_open' | t }}"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
   </div>
+
+  {%- comment -%} Mobile nav drawer {%- endcomment -%}
+  <nav class="site-header__mobile-nav" id="mobile-nav" aria-hidden="true">
+    {%- for link in section.settings.menu.links -%}
+      <a
+        href="{{ link.url }}"
+        class="site-header__mobile-link{% if link.active %} is-active{% endif %}"
+      >
+        {{- link.title -}}
+      </a>
+    {%- endfor -%}
+  </nav>
 </header>
 
 {% stylesheet %}
-  header {
+  /* ── Header base ── */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition-base), background-color var(--transition-base);
+    font-family: var(--font-primary);
+  }
+
+  .site-header.is-scrolled {
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .site-header__inner {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
     height: 5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-md);
   }
-  header a {
-    position: relative;
+
+  /* ── Logo ── */
+  .site-header__logo {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg);
     text-decoration: none;
-    color: var(--color-foreground);
+    flex-shrink: 0;
+  }
+
+  /* ── Desktop nav ── */
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  .site-header__nav-link {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-fg);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color var(--transition-fast);
+  }
+
+  .site-header__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-fg);
+    transition: width var(--transition-base);
+  }
+
+  .site-header__nav-link:hover::after,
+  .site-header__nav-link.is-active::after {
+    width: 100%;
+  }
+
+  /* ── Icons ── */
+  .site-header__icons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .site-header__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-xs);
+    color: var(--color-fg);
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: opacity var(--transition-fast);
+    text-decoration: none;
+    position: relative;
   }
-  header a sup {
+
+  .site-header__icon-btn:hover {
+    opacity: 0.6;
+  }
+
+  .site-header__cart-count {
     position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
-  }
-  header svg {
-    width: 2rem;
-  }
-  header .header__menu,
-  header .header__icons {
+    top: 0;
+    right: 0;
+    background-color: var(--color-accent);
+    color: var(--color-text-light);
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* ── Hamburger — mobile only ── */
+  .site-header__hamburger {
+    display: none;
+  }
+
+  /* ── Mobile nav drawer ── */
+  .site-header__mobile-nav {
+    display: none;
+    flex-direction: column;
+    background-color: var(--color-bg);
+    padding: var(--space-md) var(--page-margin) var(--space-lg);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    gap: var(--space-md);
+  }
+
+  .site-header__mobile-nav.is-open {
+    display: flex;
+  }
+
+  .site-header__mobile-link {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-fg);
+    text-decoration: none;
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    transition: color var(--transition-fast);
+  }
+
+  .site-header__mobile-link:hover,
+  .site-header__mobile-link.is-active {
+    color: var(--color-accent);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .site-header__nav {
+      display: none;
+    }
+
+    .site-header__hamburger {
+      display: flex;
+    }
+  }
+
+  /* ── Body offset so content isn't hidden under fixed header ── */
+  body {
+    padding-top: 5rem;
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const header = document.getElementById('site-header');
+    const hamburger = header.querySelector('.site-header__hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    // Scrolled state
+    window.addEventListener(
+      'scroll',
+      function () {
+        header.classList.toggle('is-scrolled', window.scrollY > 10);
+      },
+      { passive: true }
+    );
+
+    // Mobile toggle
+    hamburger.addEventListener('click', function () {
+      const isOpen = mobileNav.classList.toggle('is-open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+      mobileNav.setAttribute('aria-hidden', !isOpen);
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
@@ -64,7 +291,8 @@
     {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "t:labels.menu",
+      "default": "main-menu"
     },
     {
       "type": "link_list",
