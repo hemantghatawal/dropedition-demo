@@ -3,7 +3,7 @@
     {%- if section.settings.image != blank -%}
       <img
         src="{{ section.settings.image | image_url: width: 2400 }}"
-        alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+        alt="{{ section.settings.image.alt | escape }}"
         class="hero__image"
         loading="eager"
         fetchpriority="high"
@@ -13,7 +13,7 @@
     {%- else -%}
       <img
         src="{{ 'hero-banner.jpg' | asset_url }}"
-        alt="{{ section.settings.heading | escape }}"
+        alt=""
         class="hero__image"
         loading="eager"
         fetchpriority="high"
@@ -22,26 +22,6 @@
       >
     {%- endif -%}
     <div class="hero__overlay"></div>
-  </div>
-
-  <div class="hero__content">
-    {%- if section.settings.label != blank -%}
-      <p class="hero__label">{{ section.settings.label | escape }}</p>
-    {%- endif -%}
-
-    {%- if section.settings.heading != blank -%}
-      <h1 class="hero__heading">{{ section.settings.heading | escape }}</h1>
-    {%- endif -%}
-
-    {%- if section.settings.subheading != blank -%}
-      <p class="hero__subheading">{{ section.settings.subheading | escape }}</p>
-    {%- endif -%}
-
-    {%- if section.settings.cta_label != blank -%}
-      <a href="{{ section.settings.cta_url | default: '#' }}" class="hero__cta">
-        {{- section.settings.cta_label | escape -}}
-      </a>
-    {%- endif -%}
   </div>
 </section>
 
@@ -174,34 +154,6 @@
       "type": "image_picker",
       "id": "image",
       "label": "t:sections.hero_banner.image"
-    },
-    {
-      "type": "text",
-      "id": "label",
-      "label": "t:sections.hero_banner.label",
-      "default": "Bestseller"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "t:sections.hero_banner.heading",
-      "default": "Timeless pieces for modern living"
-    },
-    {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "t:sections.hero_banner.subheading"
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "t:sections.hero_banner.cta_label",
-      "default": "Shop now"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "t:sections.hero_banner.cta_url"
     },
     {
       "type": "range",
