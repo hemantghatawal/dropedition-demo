@@ -1,39 +1,68 @@
-<section class="hero full-width" id="hero-banner">
-  <div class="hero__media">
-    {%- if section.settings.image != blank -%}
-      <img
-        src="{{ section.settings.image | image_url: width: 2400 }}"
-        alt="{{ section.settings.image.alt | escape }}"
-        class="hero__image"
-        loading="eager"
-        fetchpriority="high"
-        width="{{ section.settings.image.width }}"
-        height="{{ section.settings.image.height }}"
-      >
-    {%- else -%}
-      <img
-        src="{{ 'hero-banner.jpg' | asset_url }}"
-        alt=""
-        class="hero__image"
-        loading="eager"
-        fetchpriority="high"
-        width="2400"
-        height="1350"
-      >
-    {%- endif -%}
-    <div class="hero__overlay"></div>
-  </div>
-</section>
+{%- comment -%}
+  Hero Banner — scroll-driven "DROP EDITION" reveal
+  - Section is pinned for the scroll animation duration
+  - Text uses background-clip: text so the hero image shows THROUGH the letters
+  - As scroll progresses: text scales up, white overlay fades in to 90%
+  - When text hits 110vw wide, pin releases and page scrolls naturally
+{%- endcomment -%}
+
+<div class="hero-pin-wrapper full-width" id="hero-pin-wrapper">
+  <section class="hero full-width" id="hero-banner">
+    {%- comment -%} Background image {%- endcomment -%}
+    <div class="hero__media" id="hero-media">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 2400 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          class="hero__image"
+          loading="eager"
+          fetchpriority="high"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+        >
+      {%- else -%}
+        <img
+          src="{{ 'hero-banner.jpg' | asset_url }}"
+          alt=""
+          class="hero__image"
+          loading="eager"
+          fetchpriority="high"
+          width="2400"
+          height="1350"
+        >
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} White fade overlay {%- endcomment -%}
+    <div class="hero__white-overlay" id="hero-white-overlay"></div>
+
+    {%- comment -%}
+      The text uses background-clip: text.
+      The background of the text element is the same image as the hero,
+      so the image shows THROUGH the letters like a clipping mask.
+    {%- endcomment -%}
+    <div class="hero__text-wrap" id="hero-text-wrap">
+      <span class="hero__brand-text" id="hero-brand-text">DROP EDITION</span>
+    </div>
+  </section>
+</div>
 
 {% stylesheet %}
-  .hero {
+  /* ── Pin wrapper — gives scroll room for the animation ── */
+  .hero-pin-wrapper {
     position: relative;
+    width: 100%;
+    /* height is set by JS based on scroll distance needed */
+  }
+
+  /* ── Hero section — stays fixed during pin ── */
+  .hero {
+    position: sticky;
+    top: 0;
     width: 100%;
     height: 100svh;
     min-height: 600px;
     overflow: hidden;
-    display: flex;
-    align-items: flex-end;
     font-family: var(--font-primary);
   }
 
@@ -52,99 +81,132 @@
     display: block;
   }
 
-  /* ── Gradient overlay ── */
-  .hero__overlay {
+  /* ── White fade overlay — starts transparent, fades to 90% white ── */
+  .hero__white-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0) 100%);
-  }
-
-  /* ── Content ── */
-  .hero__content {
-    position: relative;
     z-index: 1;
-    width: 100%;
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: var(--space-xl) var(--page-margin);
+    background-color: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Text wrap — centered in hero ── */
+  .hero__text-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-md);
-  }
-
-  /* ── Label ── */
-  .hero__label {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-text-light);
-    margin: 0;
-    opacity: 0.85;
-  }
-
-  /* ── Heading ── */
-  .hero__heading {
-    font-size: clamp(2.5rem, 6vw, var(--font-size-4xl));
-    font-weight: var(--font-weight-bold);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: var(--color-text-light);
-    margin: 0;
-    max-width: 14ch;
-  }
-
-  /* ── Subheading ── */
-  .hero__subheading {
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-regular);
-    color: var(--color-text-light);
-    opacity: 0.8;
-    margin: 0;
-    max-width: 40ch;
-    line-height: 1.6;
-  }
-
-  /* ── CTA button ── */
-  .hero__cta {
-    display: inline-flex;
     align-items: center;
-    gap: var(--space-sm);
-    margin-top: var(--space-sm);
-    padding: var(--space-sm) var(--space-lg);
-    background-color: var(--color-text-light);
-    color: var(--color-primary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.12em;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* ── Brand text — image shows THROUGH letters via background-clip ── */
+  .hero__brand-text {
+    display: block;
+    /* font-family: Georgia, 'Times New Roman', serif; */
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
-    text-decoration: none;
-    border: 2px solid var(--color-text-light);
-    transition: background-color var(--transition-base), color var(--transition-base);
+    white-space: nowrap;
+
+    /* The clipping mask effect */
+    background-image: var(--hero-bg-url);
+    background-size: cover;
+    background-position: center;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+
+    /* Start invisible, JS controls everything */
+    font-size: 225px;
+    opacity: 0;
+    will-change: font-size, opacity;
   }
 
-  .hero__cta:hover {
-    background-color: transparent;
-    color: var(--color-text-light);
-  }
-
-  /* ── Responsive ── */
+  /* ── Mobile ── */
   @media (max-width: 768px) {
-    .hero {
-      min-height: 100svh;
-      align-items: flex-end;
-    }
-
-    .hero__heading {
-      font-size: clamp(2rem, 10vw, 3rem);
-    }
-
-    .hero__content {
-      padding: var(--space-lg) var(--page-margin);
+    .hero__brand-text {
+      font-size: 18vw;
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var wrapper = document.getElementById('hero-pin-wrapper');
+    var hero = document.getElementById('hero-banner');
+    var text = document.getElementById('hero-brand-text');
+    var overlay = document.getElementById('hero-white-overlay');
+    var imgEl = hero.querySelector('.hero__image');
+
+    if (!wrapper || !hero || !text || !overlay || !imgEl) return;
+
+    text.style.backgroundImage = 'url(' + imgEl.src + ')';
+
+    var scrollRoom = window.innerHeight * 2.2;
+    wrapper.style.height = window.innerHeight + scrollRoom + 'px';
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function onScroll() {
+      var rect = wrapper.getBoundingClientRect();
+      var scrolled = -rect.top;
+
+      if (scrolled <= 0) {
+        text.style.opacity = '0';
+        text.style.fontSize = '225px';
+        overlay.style.opacity = '0';
+        return;
+      }
+
+      var progress = clamp(scrolled / scrollRoom, 0, 1);
+
+      /* Text appears instantly as soon as scroll starts */
+      text.style.opacity = progress > 0 ? '1' : '0';
+
+      /* Phase 2 — font grows gently from 225px to 320px only */
+      var startPx = 225;
+      var endPx = 320;
+      var fontSize = lerp(startPx, endPx, easeInOut(progress));
+      text.style.fontSize = fontSize.toFixed(2) + 'px';
+
+      /* Phase 3 — starts immediately from 0%, reaches 0.75 at 100% */
+      var overlayP = clamp(progress / 1.0, 0, 1);
+      overlay.style.opacity = (easeInOut(overlayP) * 0.75).toFixed(3);
+    }
+
+    text.style.opacity = '0';
+    text.style.fontSize = '225px';
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener(
+      'resize',
+      function () {
+        scrollRoom = window.innerHeight * 2.2;
+        wrapper.style.height = window.innerHeight + scrollRoom + 'px';
+        onScroll();
+      },
+      { passive: true }
+    );
+
+    onScroll();
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
