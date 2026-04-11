@@ -68,6 +68,10 @@
       "cta_label": "Button label",
       "cta_url": "Button link",
       "overlay_opacity": "Overlay opacity"
+    },
+    "featured_collection": {
+      "prev": "Previous slide",
+      "next": "Next slide"
     }
   },
   "header": {

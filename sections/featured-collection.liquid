@@ -1,0 +1,728 @@
+<section class="featured-collection full-width" id="featured-collection">
+  {%- comment -%} Section label {%- endcomment -%}
+  <div class="featured-collection__header">
+    <p class="featured-collection__label">{{ section.settings.label | escape }}</p>
+  </div>
+
+  {%- comment -%} Slider stage {%- endcomment -%}
+  <div class="featured-collection__stage" id="fc-stage">
+    <div class="featured-collection__track" id="fc-track">
+      {%- for i in (1..6) -%}
+        {%- assign img_name = 'bestseller-' | append: i | append: '.avif' -%}
+        <div class="featured-collection__slide" data-index="{{ forloop.index0 }}">
+          <img
+            src="{{ img_name | asset_url }}"
+            alt="{{ section.settings.label | escape }} {{ i }}"
+            class="featured-collection__img"
+            loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+            width="800"
+            height="1000"
+          >
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} Desktop click zones {%- endcomment -%}
+    <div
+      class="featured-collection__zone featured-collection__zone--prev"
+      id="fc-prev"
+      role="button"
+      tabindex="0"
+      aria-label="{{ 'sections.featured_collection.prev' | t }}"
+    ></div>
+    <div
+      class="featured-collection__zone featured-collection__zone--next"
+      id="fc-next"
+      role="button"
+      tabindex="0"
+      aria-label="{{ 'sections.featured_collection.next' | t }}"
+    ></div>
+
+    {%- comment -%} Desktop custom cursor {%- endcomment -%}
+    <div class="featured-collection__cursor" id="fc-cursor">
+      <svg
+        class="featured-collection__cursor-arrow featured-collection__cursor-arrow--left"
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="112" y1="6" x2="0" y2="6"/>
+        <polyline points="8,0 0,6 8,12"/>
+      </svg>
+      <svg
+        class="featured-collection__cursor-arrow featured-collection__cursor-arrow--right"
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="0" y1="6" x2="112" y2="6"/>
+        <polyline points="104,0 112,6 104,12"/>
+      </svg>
+    </div>
+
+    {%- comment -%} Glass info card {%- endcomment -%}
+    <div class="featured-collection__card">
+      <span class="featured-collection__card-number">{{ section.settings.card_number }}</span>
+      <p class="featured-collection__card-text">{{ section.settings.card_text | escape }}</p>
+      <a href="{{ section.settings.card_cta_url | default: '#' }}" class="featured-collection__card-cta">
+        {{- section.settings.card_cta_label | escape -}}
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} Tablet arrow buttons (below stage) {%- endcomment -%}
+  <div class="featured-collection__tablet-nav">
+    <button
+      class="featured-collection__nav-btn"
+      id="fc-prev-tablet"
+      aria-label="{{ 'sections.featured_collection.prev' | t }}"
+    >
+      <svg
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="112" y1="6" x2="0" y2="6"/>
+        <polyline points="8,0 0,6 8,12"/>
+      </svg>
+    </button>
+    <button
+      class="featured-collection__nav-btn"
+      id="fc-next-tablet"
+      aria-label="{{ 'sections.featured_collection.next' | t }}"
+    >
+      <svg
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="0" y1="6" x2="112" y2="6"/>
+        <polyline points="104,0 112,6 104,12"/>
+      </svg>
+    </button>
+  </div>
+
+  {%- comment -%} Mobile arrow buttons (below stage) {%- endcomment -%}
+  <div class="featured-collection__mobile-nav">
+    <button
+      class="featured-collection__nav-btn"
+      id="fc-prev-mobile"
+      aria-label="{{ 'sections.featured_collection.prev' | t }}"
+    >
+      <svg
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="112" y1="6" x2="0" y2="6"/>
+        <polyline points="8,0 0,6 8,12"/>
+      </svg>
+    </button>
+    <button
+      class="featured-collection__nav-btn"
+      id="fc-next-mobile"
+      aria-label="{{ 'sections.featured_collection.next' | t }}"
+    >
+      <svg
+        width="112"
+        height="12"
+        viewBox="0 0 112 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="0" y1="6" x2="112" y2="6"/>
+        <polyline points="104,0 112,6 104,12"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+{% stylesheet %}
+  .featured-collection {
+    position: relative;
+    width: 100%;
+    background-color: var(--color-bg);
+    padding-top: var(--space-lg);
+    overflow: hidden;
+    font-family: var(--font-primary);
+  }
+
+  /* ── Label ── */
+  .featured-collection__header {
+    width: 100%;
+    padding: 0 var(--page-margin) var(--space-md);
+    text-align: center;
+  }
+
+  .featured-collection__label {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  /* ── Stage ── */
+  .featured-collection__stage {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    min-height: 560px;
+    cursor: none;
+    overflow: hidden;
+  }
+
+  .featured-collection__track {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── Slides — all transform-based ── */
+  .featured-collection__slide {
+    position: absolute;
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), width 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.75s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+  }
+
+  /* Desktop: center */
+  .featured-collection__slide.is-active {
+    width: 30vw;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    opacity: 1;
+  }
+
+  /* Desktop: left peek */
+  .featured-collection__slide.is-side-left {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% - 50vw + 6vw), -50%);
+    z-index: 2;
+    opacity: 1;
+  }
+
+  /* Desktop: right peek */
+  .featured-collection__slide.is-side-right {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% + 50vw - 6vw), -50%);
+    z-index: 2;
+    opacity: 1;
+  }
+
+  .featured-collection__slide.is-hidden-left {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% - 120vw), -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .featured-collection__slide.is-hidden-right {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% + 120vw), -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .featured-collection__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* ── Desktop click zones ── */
+  .featured-collection__zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: 5;
+  }
+
+  .featured-collection__zone--prev {
+    left: 0;
+  }
+  .featured-collection__zone--next {
+    right: 0;
+  }
+
+  /* ── Desktop custom cursor ── */
+  .featured-collection__cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    color: #000000;
+  }
+
+  .featured-collection__cursor.is-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .featured-collection__cursor-arrow {
+    position: absolute;
+    transition: opacity 0.15s ease;
+  }
+
+  .featured-collection__cursor-arrow--left {
+    opacity: 0;
+  }
+  .featured-collection__cursor-arrow--right {
+    opacity: 1;
+  }
+
+  .featured-collection__cursor.show-left .featured-collection__cursor-arrow--left {
+    opacity: 1;
+  }
+  .featured-collection__cursor.show-left .featured-collection__cursor-arrow--right {
+    opacity: 0;
+  }
+  .featured-collection__cursor.show-right .featured-collection__cursor-arrow--left {
+    opacity: 0;
+  }
+  .featured-collection__cursor.show-right .featured-collection__cursor-arrow--right {
+    opacity: 1;
+  }
+
+  /* ── Glass card ── */
+  .featured-collection__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% + 8vw), calc(-50% + 4vh));
+    z-index: 10;
+    width: 300px;
+    padding: var(--space-lg) var(--space-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    pointer-events: none;
+  }
+
+  .featured-collection__card-cta {
+    pointer-events: auto;
+  }
+
+  .featured-collection__card-number {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .featured-collection__card-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-fg);
+    line-height: 1.6;
+    opacity: 0.85;
+    margin: 0;
+  }
+
+  .featured-collection__card-cta {
+    display: inline-block;
+    margin-top: auto;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-fg);
+    color: var(--color-fg);
+    background-color: transparent;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color var(--transition-base), color var(--transition-base);
+  }
+
+  .featured-collection__card-cta:hover {
+    background-color: var(--color-fg);
+    color: var(--color-text-light);
+  }
+
+  /* ── Tablet / mobile nav buttons — hidden on desktop ── */
+  .featured-collection__tablet-nav,
+  .featured-collection__mobile-nav {
+    display: none;
+  }
+
+  /* ── Nav button base ── */
+  .featured-collection__nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-sm);
+    color: var(--color-fg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--transition-fast);
+  }
+
+  .featured-collection__nav-btn:hover {
+    opacity: 0.5;
+  }
+  .featured-collection__nav-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+
+  /* ────────────────────────────────────────
+     TABLET  768px – 1024px
+  ──────────────────────────────────────── */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .featured-collection__stage {
+      height: 75vh;
+      cursor: auto;
+    }
+
+    /* Same 3-image layout as desktop */
+    .featured-collection__slide.is-active {
+      width: 40vw;
+      height: 70%;
+    }
+
+    .featured-collection__slide.is-side-left {
+      width: 28vw;
+      height: calc(100% - 80px);
+      transform: translate(calc(-50% - 50vw + 5vw), -50%);
+    }
+
+    .featured-collection__slide.is-side-right {
+      width: 28vw;
+      height: calc(100% - 80px);
+      transform: translate(calc(-50% + 50vw - 5vw), -50%);
+    }
+
+    /* Hide desktop cursor zones */
+    .featured-collection__zone {
+      display: none;
+    }
+    .featured-collection__cursor {
+      display: none;
+    }
+
+    /* Show tablet arrow buttons below stage */
+    .featured-collection__tablet-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-xl);
+      padding: var(--space-md) var(--page-margin);
+    }
+
+    .featured-collection__card {
+      transform: translate(calc(-50% + 6vw), calc(-50% + 3vh));
+      width: 240px;
+    }
+  }
+
+  /* ────────────────────────────────────────
+     MOBILE  < 768px
+  ──────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .featured-collection__stage {
+      height: 80vh;
+      cursor: auto;
+    }
+
+    /*
+      Mobile stagger layout — both images use transform only for smooth animation.
+      Left image: centered at X = -27vw (left side), Y = -55% (higher up)
+      Right image: centered at X = +27vw (right side), Y = -45% (lower down)
+      Gap between them: stage is 100vw, each image 44vw, centers at ±27vw = 2vw gap
+    */
+
+    .featured-collection__slide.is-active {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 27vw), calc(-50% - 8%));
+      z-index: 3;
+      opacity: 1;
+    }
+
+    .featured-collection__slide.is-side-right {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% + 27vw), calc(-50% + 8%));
+      z-index: 2;
+      opacity: 1;
+    }
+
+    /* Outgoing left — exits left, keeps left vertical position */
+    .featured-collection__slide.is-side-left {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 130vw), calc(-50% - 8%));
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .featured-collection__slide.is-hidden-left {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 130vw), calc(-50% - 8%));
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Waiting right — enters from right, keeps right vertical position */
+    .featured-collection__slide.is-hidden-right {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% + 130vw), calc(-50% + 8%));
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Glass card — centered between the two staggered images */
+    .featured-collection__card {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      padding: var(--space-md);
+    }
+
+    .featured-collection__zone {
+      display: none;
+    }
+    .featured-collection__cursor {
+      display: none;
+    }
+
+    .featured-collection__mobile-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-xl);
+      padding: var(--space-md) var(--page-margin);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const TOTAL = 6;
+    let current = 1;
+
+    const track = document.getElementById('fc-track');
+    const stage = document.getElementById('fc-stage');
+    const cursor = document.getElementById('fc-cursor');
+    const zoneNext = document.getElementById('fc-next');
+    const zonePrev = document.getElementById('fc-prev');
+    const tabletNext = document.getElementById('fc-next-tablet');
+    const tabletPrev = document.getElementById('fc-prev-tablet');
+    const mobileNext = document.getElementById('fc-next-mobile');
+    const mobilePrev = document.getElementById('fc-prev-mobile');
+    const slides = Array.from(track.querySelectorAll('.featured-collection__slide'));
+
+    function render() {
+      slides.forEach(function (slide, i) {
+        slide.classList.remove('is-active', 'is-side-left', 'is-side-right', 'is-hidden-left', 'is-hidden-right');
+
+        if (i === current) {
+          slide.classList.add('is-active');
+        } else if (i === current - 1) {
+          slide.classList.add('is-side-left');
+        } else if (i === current + 1) {
+          slide.classList.add('is-side-right');
+        } else if (i < current) {
+          slide.classList.add('is-hidden-left');
+        } else {
+          slide.classList.add('is-hidden-right');
+        }
+      });
+
+      var atStart = current === 0;
+      var atEnd = current === TOTAL - 1;
+
+      zoneNext.style.pointerEvents = atEnd ? 'none' : 'auto';
+      zonePrev.style.pointerEvents = atStart ? 'none' : 'auto';
+      tabletNext.disabled = atEnd;
+      tabletPrev.disabled = atStart;
+      mobileNext.disabled = atEnd;
+      mobilePrev.disabled = atStart;
+    }
+
+    function goNext() {
+      if (current < TOTAL - 1) {
+        current++;
+        render();
+      }
+    }
+    function goPrev() {
+      if (current > 0) {
+        current--;
+        render();
+      }
+    }
+
+    /* Desktop zones */
+    zoneNext.addEventListener('click', goNext);
+    zonePrev.addEventListener('click', goPrev);
+    zoneNext.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') goNext();
+    });
+    zonePrev.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') goPrev();
+    });
+
+    /* Tablet buttons */
+    tabletNext.addEventListener('click', goNext);
+    tabletPrev.addEventListener('click', goPrev);
+
+    /* Mobile buttons */
+    mobileNext.addEventListener('click', goNext);
+    mobilePrev.addEventListener('click', goPrev);
+
+    /* Desktop custom cursor */
+    stage.addEventListener('mouseenter', function () {
+      cursor.classList.add('is-visible');
+    });
+    stage.addEventListener('mouseleave', function () {
+      cursor.classList.remove('is-visible');
+    });
+    stage.addEventListener('mousemove', function (e) {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      var half = stage.getBoundingClientRect().left + stage.offsetWidth / 2;
+      if (e.clientX < half) {
+        cursor.classList.remove('show-right');
+        cursor.classList.add('show-left');
+        cursor.style.opacity = current > 0 ? '1' : '0.3';
+      } else {
+        cursor.classList.remove('show-left');
+        cursor.classList.add('show-right');
+        cursor.style.opacity = current < TOTAL - 1 ? '1' : '0.3';
+      }
+    });
+
+    /* Touch swipe */
+    var touchStartX = 0;
+    stage.addEventListener(
+      'touchstart',
+      function (e) {
+        touchStartX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+    stage.addEventListener(
+      'touchend',
+      function (e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) goNext();
+          else goPrev();
+        }
+      },
+      { passive: true }
+    );
+
+    render();
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.featured_collection.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:sections.featured_collection.label",
+      "default": "Bestseller"
+    },
+    {
+      "type": "text",
+      "id": "card_number",
+      "label": "t:sections.featured_collection.card_number",
+      "default": "06"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text",
+      "label": "t:sections.featured_collection.card_text",
+      "default": "Drop 6 channels 90's retro elegance, where timeless closet pieces are reborn with a modern edge."
+    },
+    {
+      "type": "text",
+      "id": "card_cta_label",
+      "label": "t:sections.featured_collection.card_cta_label",
+      "default": "Shop all"
+    },
+    {
+      "type": "url",
+      "id": "card_cta_url",
+      "label": "t:sections.featured_collection.card_cta_url"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured_collection.name"
+    }
+  ]
+}
+{% endschema %}

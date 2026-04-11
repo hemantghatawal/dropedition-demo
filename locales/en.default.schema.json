@@ -35,6 +35,16 @@
     "typography": "Typography"
   },
   "sections": {
+    "featured_collection": {
+      "name": "Featured collection",
+      "label": "Section label",
+      "card_number": "Card number",
+      "card_text": "Card description",
+      "card_cta_label": "Card button label",
+      "card_cta_url": "Card button link",
+      "prev": "Previous",
+      "next": "Next"
+    },
     "hero_banner": {
       "name": "Hero banner",
       "image": "Background image",
@@ -96,6 +106,6 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
   }
 }

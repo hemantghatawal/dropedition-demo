@@ -8,9 +8,19 @@
         "cta_label": "Shop now",
         "overlay_opacity": 40
       }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "label": "Bestseller",
+        "card_number": "06",
+        "card_text": "Drop 6 channels 90's retro elegance, where timeless closet pieces are reborn with a modern edge.",
+        "card_cta_label": "Shop all"
+      }
     }
   },
   "order": [
-    "hero-banner"
+    "hero-banner",
+    "featured-collection"
   ]
 }
