@@ -58,6 +58,18 @@
       "vertical": "Vertical"
     }
   },
+  "sections": {
+    "hero_banner": {
+      "name": "Hero banner",
+      "image": "Background image",
+      "label": "Label",
+      "heading": "Heading",
+      "subheading": "Subheading",
+      "cta_label": "Button label",
+      "cta_url": "Button link",
+      "overlay_opacity": "Overlay opacity"
+    }
+  },
   "header": {
     "logo": "Logo",
     "nav_label": "Main navigation",
