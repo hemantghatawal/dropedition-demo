@@ -61,6 +61,10 @@
       "heading": "Heading",
       "text_left": "Left column text",
       "text_right": "Right column text"
+    },
+    "sort_by_type": {
+      "name": "Sort by type",
+      "heading": "Heading"
     }
   },
   "labels": {

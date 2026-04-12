@@ -22,12 +22,17 @@
     "craftsmanship": {
       "type": "craftsmanship",
       "settings": {}
+    },
+    "sort-by-type": {
+      "type": "sort-by-type",
+      "settings": {}
     }
   },
   "order": [
     "hero-banner",
     "featured-collection",
     "living-room",
-    "craftsmanship"
+    "craftsmanship",
+    "sort-by-type"
   ]
 }

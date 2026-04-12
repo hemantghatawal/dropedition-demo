@@ -67,6 +67,10 @@
     "featured_collection": {
       "prev": "Previous slide",
       "next": "Next slide"
+    },
+    "sort_by_type": {
+      "name": "Sort by type",
+      "heading": "Heading"
     }
   },
   "header": {
