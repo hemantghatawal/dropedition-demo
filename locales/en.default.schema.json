@@ -35,6 +35,11 @@
     "typography": "Typography"
   },
   "sections": {
+    "hero_banner": {
+      "name": "Hero banner",
+      "image": "Background image",
+      "overlay_opacity": "Overlay opacity"
+    },
     "featured_collection": {
       "name": "Featured collection",
       "label": "Section label",
@@ -50,15 +55,12 @@
       "heading": "Heading",
       "cta_label": "Button label"
     },
-    "hero_banner": {
-      "name": "Hero banner",
+    "craftsmanship": {
+      "name": "Craftsmanship",
       "image": "Background image",
-      "label": "Label",
       "heading": "Heading",
-      "subheading": "Subheading",
-      "cta_label": "Button label",
-      "cta_url": "Button link",
-      "overlay_opacity": "Overlay opacity"
+      "text_left": "Left column text",
+      "text_right": "Right column text"
     }
   },
   "labels": {

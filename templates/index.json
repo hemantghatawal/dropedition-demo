@@ -18,11 +18,16 @@
     "living-room": {
       "type": "living-room",
       "settings": {}
+    },
+    "craftsmanship": {
+      "type": "craftsmanship",
+      "settings": {}
     }
   },
   "order": [
     "hero-banner",
     "featured-collection",
-    "living-room"
+    "living-room",
+    "craftsmanship"
   ]
 }
