@@ -45,6 +45,11 @@
       "prev": "Previous",
       "next": "Next"
     },
+    "living_room": {
+      "name": "Living room",
+      "heading": "Heading",
+      "cta_label": "Button label"
+    },
     "hero_banner": {
       "name": "Hero banner",
       "image": "Background image",

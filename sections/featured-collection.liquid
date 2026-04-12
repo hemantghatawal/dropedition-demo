@@ -305,13 +305,15 @@
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
+    visibility: hidden;
     transform: translate(-50%, -50%) scale(0.6);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     color: #000000;
   }
 
   .featured-collection__cursor.is-visible {
     opacity: 1;
+    visibility: visible;
     transform: translate(-50%, -50%) scale(1);
   }
 
@@ -643,7 +645,7 @@
       cursor.classList.add('is-visible');
     });
     stage.addEventListener('mouseleave', function () {
-      cursor.classList.remove('is-visible');
+      cursor.classList.remove('is-visible', 'show-left', 'show-right');
     });
     stage.addEventListener('mousemove', function (e) {
       cursor.style.left = e.clientX + 'px';
