@@ -29,12 +29,17 @@
       {{- section.settings.heading | escape -}}
     </h2>
 
-    <p class="craftsmanship__text craftsmanship__text--left">
-      {{- section.settings.text_left | escape -}}
-    </p>
-    <p class="craftsmanship__text craftsmanship__text--right">
-      {{- section.settings.text_right | escape -}}
-    </p>
+    <div class="craftsmanship__text craftsmanship__text--left">
+      <p class="craftsmanship__line">Handcrafted with intention,</p>
+      <p class="craftsmanship__line">built to endure the test</p>
+      <p class="craftsmanship__line">of time and taste.</p>
+    </div>
+
+    <div class="craftsmanship__text craftsmanship__text--right">
+      <p class="craftsmanship__line">worth keeping for gens</p>
+      <p class="craftsmanship__line">Always a story to tells</p>
+      <p class="craftsmanship__line">worth keeping, always.</p>
+    </div>
   </div>
 </section>
 
@@ -82,56 +87,84 @@
 
   /* ── Heading: top center ── */
   .craftsmanship__heading {
-    font-size: clamp(3rem, 8vw, 7rem);
+    font-size: clamp(2rem, 6vw, 7rem);
     font-weight: var(--font-weight-bold);
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--color-text-light);
     text-align: center;
-    margin: 0 0 0 0;
+    margin: 0;
     line-height: 1;
   }
 
   /* ── Diagonal text layout ── */
   .craftsmanship__text {
     position: absolute;
-    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--color-text-light);
-    line-height: 1.8;
+    line-height: 1.6;
     opacity: 0.85;
     margin: 0;
-    letter-spacing: 0.5em; /* starts wide, JS steps it down */
-    max-width: 320px;
-    transition: letter-spacing 0.7s ease;
   }
 
   .craftsmanship__text--left {
     top: 25%;
     left: var(--page-margin);
+    font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+    max-width: 480px;
   }
 
   .craftsmanship__text--right {
     bottom: 10%;
-    right: var(--page-margin);
-    text-align: right;
+    left: 55%;
+    text-align: left;
+    font-size: clamp(2.5rem, 4vw, 3.3rem);
+    line-height: 1.2;
+  }
+
+  .craftsmanship__text--right .craftsmanship__line {
+    white-space: nowrap !important;
+  }
+
+  /* ── Per-line animation ── */
+  .craftsmanship__line {
+    margin: 0 0 0.3em;
+    white-space: nowrap;
+  }
+
+  .craftsmanship__char {
+    display: inline-block;
+    letter-spacing: 0.5em;
+    transition: letter-spacing 0.6s ease;
   }
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .craftsmanship__heading {
-      letter-spacing: 0.2em;
+      font-size: clamp(1.8rem, 10vw, 3.5rem);
+      letter-spacing: 0.15em;
     }
 
     .craftsmanship__text {
       position: static;
       max-width: 100%;
-      text-align: left;
       margin-top: var(--space-lg);
     }
 
-    .craftsmanship__text--right {
+    .craftsmanship__text--left {
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
       text-align: left;
+    }
+
+    .craftsmanship__text--right {
+      position: absolute;
+      bottom: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(1.4rem, 6vw, 2rem);
+      text-align: left;
+      width: auto;
+      max-width: 100%;
     }
   }
 {% endstylesheet %}
@@ -140,7 +173,6 @@
   (function () {
     var section = document.getElementById('craftsmanship');
     var bg = document.getElementById('craftsmanship-bg');
-    var texts = section ? section.querySelectorAll('.craftsmanship__text') : [];
 
     if (!section || !bg) return;
 
@@ -153,39 +185,51 @@
       bg.style.transform = 'translateY(' + (clampedP - 0.5) * 30 + '%)';
     }
 
-    /* ── Letter-spacing animation (runs once on enter) ── */
+    /* ── Split each line into per-char spans ── */
+    function splitChars() {
+      var lines = section.querySelectorAll('.craftsmanship__line');
+      lines.forEach(function (line) {
+        var text = line.textContent;
+        line.textContent = '';
+        text.split('').forEach(function (char) {
+          var span = document.createElement('span');
+          span.className = 'craftsmanship__char';
+          span.textContent = char === ' ' ? '\u00A0' : char;
+          line.appendChild(span);
+        });
+      });
+    }
+
+    /* ── Animate chars: all lines together, random order ── */
     var animated = false;
 
-    function animateTexts() {
+    function animateChars() {
       if (animated) return;
       animated = true;
 
-      /* Step 1 → mid spacing after 1s */
-      setTimeout(function () {
-        texts.forEach(function (el) {
-          el.style.letterSpacing = '0.25em';
-        });
-      }, 1000);
+      var chars = section.querySelectorAll('.craftsmanship__char');
 
-      /* Step 2 → tighter after 2s */
-      setTimeout(function () {
-        texts.forEach(function (el) {
-          el.style.letterSpacing = '0.12em';
-        });
-      }, 2000);
+      chars.forEach(function (char) {
+        var delay = Math.random() * 1200; /* random delay up to 1200ms */
 
-      /* Step 3 → normal after 3s */
-      setTimeout(function () {
-        texts.forEach(function (el) {
-          el.style.letterSpacing = '0.04em';
-        });
-      }, 3000);
+        setTimeout(function () {
+          char.style.letterSpacing = '0.25em';
+        }, delay);
+        setTimeout(function () {
+          char.style.letterSpacing = '0.12em';
+        }, delay + 400);
+        setTimeout(function () {
+          char.style.letterSpacing = '0.04em';
+        }, delay + 800);
+      });
     }
+
+    splitChars();
 
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) animateTexts();
+          if (entry.isIntersecting) animateChars();
         });
       },
       { threshold: 0.3 }
