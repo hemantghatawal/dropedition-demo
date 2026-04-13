@@ -26,6 +26,10 @@
     "sort-by-type": {
       "type": "sort-by-type",
       "settings": {}
+    },
+    "journals": {
+      "type": "journals",
+      "settings": {}
     }
   },
   "order": [
@@ -33,6 +37,7 @@
     "featured-collection",
     "living-room",
     "craftsmanship",
-    "sort-by-type"
+    "sort-by-type",
+    "journals"
   ]
 }

@@ -65,6 +65,11 @@
     "sort_by_type": {
       "name": "Sort by type",
       "heading": "Heading"
+    },
+    "journals": {
+      "name": "Journals",
+      "heading": "Heading",
+      "main_image": "Main image"
     }
   },
   "labels": {
