@@ -1,22 +1,71 @@
 {%- comment -%}
-  Hero Banner — scroll-driven "DROP EDITION" reveal
-  - Section is pinned for the scroll animation duration
-  - Text uses background-clip: text so the hero image shows THROUGH the letters
-  - As scroll progresses: text scales up, white overlay fades in to 90%
-  - When text hits 110vw wide, pin releases and page scrolls naturally
+  Hero Banner — Premium Editorial Scroll Animation
+  - Scroll-driven text mask reveal effect
+  - Background image fades out via white overlay
+  - SVG text mask reveals sharp, high-contrast version of same image
+  - Creates luxury editorial "reflection illusion" effect
 {%- endcomment -%}
 
-<div class="hero-pin-wrapper full-width" id="hero-pin-wrapper">
-  <section class="hero full-width" id="hero-banner">
-    {%- comment -%} Background image {%- endcomment -%}
-    <div class="hero__media" id="hero-media">
+{%- liquid
+  assign scroll_height = section.settings.scroll_height | default: 150
+  assign mask_start_size = section.settings.mask_start_size | default: 80
+  assign mask_end_size = section.settings.mask_end_size | default: 110
+  assign overlay_opacity = section.settings.overlay_opacity | default: 90
+  assign parallax_amount = section.settings.parallax_amount | default: 20
+-%}
+
+<div
+  class="hero-scroll-container full-width"
+  id="hero-scroll-container"
+  data-scroll-height="{{ scroll_height }}"
+  data-mask-start="{{ mask_start_size }}"
+  data-mask-end="{{ mask_end_size }}"
+  data-overlay-opacity="{{ overlay_opacity }}"
+  data-parallax="{{ parallax_amount }}"
+  data-logo-desktop="{{ 'logo.svg' | asset_url }}"
+  data-logo-mobile="{{ 'logo-s.svg' | asset_url }}"
+>
+  <div class="hero-sticky-wrapper" id="hero-sticky-wrapper">
+    {%- comment -%} Background layer with overlay {%- endcomment -%}
+    <div class="hero-bg-wrapper">
+      {%- comment -%} Base background image (will fade out) {%- endcomment -%}
+      <div class="hero-bg">
+        {%- if section.settings.image != blank -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 2400 }}"
+            alt="{{ section.settings.image.alt | escape }}"
+            class="hero-bg__image"
+            loading="eager"
+            fetchpriority="high"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+          >
+        {%- else -%}
+          <img
+            src="{{ 'hero-banner.jpg' | asset_url }}"
+            alt=""
+            class="hero-bg__image"
+            loading="eager"
+            fetchpriority="high"
+            width="2400"
+            height="1350"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} White overlay (fades in during scroll, only affects background) {%- endcomment -%}
+      <div class="hero-overlay" id="hero-overlay"></div>
+    </div>
+
+    {%- comment -%} SVG mask container (reveals sharp image through text) {%- endcomment -%}
+    <div class="hero-mask" id="hero-mask">
       {%- if section.settings.image != blank -%}
         <img
           src="{{ section.settings.image | image_url: width: 2400 }}"
-          alt="{{ section.settings.image.alt | escape }}"
-          class="hero__image"
+          alt=""
+          class="hero-mask__image"
+          id="hero-mask-image"
           loading="eager"
-          fetchpriority="high"
           width="{{ section.settings.image.width }}"
           height="{{ section.settings.image.height }}"
         >
@@ -24,136 +73,146 @@
         <img
           src="{{ 'hero-banner.jpg' | asset_url }}"
           alt=""
-          class="hero__image"
+          class="hero-mask__image"
+          id="hero-mask-image"
           loading="eager"
-          fetchpriority="high"
           width="2400"
           height="1350"
         >
       {%- endif -%}
     </div>
-
-    {%- comment -%} White fade overlay {%- endcomment -%}
-    <div class="hero__white-overlay" id="hero-white-overlay"></div>
-
-    {%- comment -%}
-      The text uses background-clip: text.
-      The background of the text element is the same image as the hero,
-      so the image shows THROUGH the letters like a clipping mask.
-    {%- endcomment -%}
-    <div class="hero__text-wrap" id="hero-text-wrap">
-      <span class="hero__brand-text" id="hero-brand-text">DROP EDITION</span>
-    </div>
-  </section>
+  </div>
 </div>
 
 {% stylesheet %}
-  /* ── Pin wrapper — gives scroll room for the animation ── */
-  .hero-pin-wrapper {
+  /* ── Scroll container — provides scroll room for animation ── */
+  .hero-scroll-container {
     position: relative;
     width: 100%;
-    /* height is set by JS based on scroll distance needed */
+    /* height set by JS based on scroll_height setting */
   }
 
-  /* ── Hero section — stays fixed during pin ── */
-  .hero {
+  /* ── Sticky wrapper — stays fixed during scroll ── */
+  .hero-sticky-wrapper {
     position: sticky;
     top: 0;
     width: 100%;
-    height: 100svh;
+    height: 100vh;
     min-height: 600px;
     overflow: hidden;
-    font-family: var(--font-primary);
   }
 
-  /* ── Background image ── */
-  .hero__media {
+  /* ── Background wrapper — contains bg image + overlay ── */
+  .hero-bg-wrapper {
     position: absolute;
     inset: 0;
     z-index: 0;
   }
 
-  .hero__image {
+  /* ── Base background layer ── */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
     display: block;
+    will-change: transform;
   }
 
-  /* ── White fade overlay — starts transparent, fades to 90% white ── */
-  .hero__white-overlay {
+  /* ── White overlay — only affects background, NOT the mask ── */
+  .hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
     background-color: #ffffff;
     opacity: 0;
     pointer-events: none;
+    will-change: opacity;
   }
 
-  /* ── Text wrap — centered in hero ── */
-  .hero__text-wrap {
+  /* ── SVG mask container — separate layer, unaffected by overlay ── */
+  .hero-mask {
     position: absolute;
     inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    z-index: 10;
     pointer-events: none;
-  }
-
-  /* ── Brand text — image shows THROUGH letters via background-clip ── */
-  .hero__brand-text {
-    display: block;
-    /* font-family: Georgia, 'Times New Roman', serif; */
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    white-space: nowrap;
-
-    /* The clipping mask effect */
-    background-image: var(--hero-bg-url);
-    background-size: cover;
-    background-position: center;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-
-    /* Start invisible, JS controls everything */
-    font-size: 225px;
+    background: transparent;
     opacity: 0;
-    will-change: font-size, opacity;
+
+    /* SVG mask applied via inline style in JS */
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transform-origin: center center;
+    will-change: transform, opacity;
   }
 
-  /* ── Mobile ── */
+  .hero-mask__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+
+    /* Enhanced contrast for masked image */
+    filter: contrast(1.15) saturate(1.1) brightness(1.05);
+    will-change: transform;
+  }
+
+  /* ── Mobile adjustments ── */
   @media (max-width: 768px) {
-    .hero__brand-text {
-      font-size: 18vw;
+    .hero-sticky-wrapper {
+      min-height: 500px;
     }
   }
 {% endstylesheet %}
 
 {% javascript %}
   (function () {
-    var wrapper = document.getElementById('hero-pin-wrapper');
-    var hero = document.getElementById('hero-banner');
-    var text = document.getElementById('hero-brand-text');
-    var overlay = document.getElementById('hero-white-overlay');
-    var imgEl = hero.querySelector('.hero__image');
+    var container = document.getElementById('hero-scroll-container');
+    var wrapper = document.getElementById('hero-sticky-wrapper');
+    var overlay = document.getElementById('hero-overlay');
+    var mask = document.getElementById('hero-mask');
+    var maskImage = document.getElementById('hero-mask-image');
 
-    if (!wrapper || !hero || !text || !overlay || !imgEl) return;
+    if (!container || !wrapper || !overlay || !mask || !maskImage) return;
 
-    text.style.backgroundImage = 'url(' + imgEl.src + ')';
+    /* ── Configuration from data attributes ── */
+    var scrollHeightVh = parseInt(container.getAttribute('data-scroll-height')) || 300;
+    var maskStartSize = parseInt(container.getAttribute('data-mask-start')) || 80;
+    var maskEndSize = parseInt(container.getAttribute('data-mask-end')) || 110;
+    var parallaxAmount = parseInt(container.getAttribute('data-parallax')) || 20;
 
-    var scrollRoom = window.innerHeight * 2.2;
-    wrapper.style.height = window.innerHeight + scrollRoom + 'px';
+    /* ── Determine SVG mask based on screen size ── */
+    var logoDesktop = container.getAttribute('data-logo-desktop');
+    var logoMobile = container.getAttribute('data-logo-mobile');
+    var isMobile = window.innerWidth <= 768;
+    var logoUrl = isMobile ? logoMobile : logoDesktop;
 
-    function easeInOut(t) {
-      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    /* ── Apply SVG mask ── */
+    mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
+    mask.style.maskImage = 'url(' + logoUrl + ')';
+
+    /* ── Set scroll container height ── */
+    var viewportHeight = window.innerHeight;
+    var containerTop = 0;
+    var scrollRoom = (scrollHeightVh / 100) * viewportHeight;
+    container.style.height = viewportHeight + scrollRoom + 'px';
+
+    /* Cache container offset once (avoids reflow on every scroll) */
+    function cacheContainerTop() {
+      containerTop = container.getBoundingClientRect().top + window.scrollY;
     }
+    cacheContainerTop();
 
     function clamp(val, min, max) {
       return Math.min(Math.max(val, min), max);
@@ -163,74 +222,186 @@
       return a + (b - a) * t;
     }
 
-    function onScroll() {
-      var rect = wrapper.getBoundingClientRect();
-      var scrolled = -rect.top;
+    /* ── Smoothed display values (interpolated each frame) ── */
+    var currentMaskSize = maskStartSize;
+    var currentOverlay = 0;
+    var currentParallax = 0;
+    var currentMaskOpacity = 0;
 
-      if (scrolled <= 0) {
-        text.style.opacity = '0';
-        text.style.fontSize = '225px';
-        overlay.style.opacity = '0';
-        return;
-      }
+    /* ── Target values driven by scroll position ── */
+    var targetMaskSize = maskStartSize;
+    var targetOverlay = 0;
+    var targetParallax = 0;
+    var targetMaskOpacity = 0;
 
+    /* Smoothing factor — higher = snappier, lower = more lag */
+    var SMOOTH = 0.25;
+
+    var rafId = null;
+
+    /* ── Read scroll position without triggering layout ── */
+    function readScroll() {
+      var scrolled = window.scrollY - containerTop;
       var progress = clamp(scrolled / scrollRoom, 0, 1);
 
-      /* Text appears instantly as soon as scroll starts */
-      text.style.opacity = progress > 0 ? '1' : '0';
+      /* Ease-in-out for a more natural feel */
+      var t = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
-      /* Phase 2 — font grows gently from 225px to 320px only */
-      var startPx = 225;
-      var endPx = 320;
-      var fontSize = lerp(startPx, endPx, easeInOut(progress));
-      text.style.fontSize = fontSize.toFixed(2) + 'px';
+      targetOverlay = t * 0.60;
+      targetMaskSize = lerp(maskStartSize, maskEndSize, t);
+      targetParallax = t * parallaxAmount;
 
-      /* Phase 3 — starts immediately from 0%, reaches 0.75 at 100% */
-      var overlayP = clamp(progress / 1.0, 0, 1);
-      overlay.style.opacity = (easeInOut(overlayP) * 0.75).toFixed(3);
+      /* Fade in mask as user scrolls — starts appearing at 5% scroll */
+      targetMaskOpacity = clamp((progress - 0.05) / 0.15, 0, 1);
     }
 
-    text.style.opacity = '0';
-    text.style.fontSize = '225px';
+    /* ── Write to DOM — only GPU-composited properties ── */
+    function writeFrame() {
+      currentOverlay = lerp(currentOverlay, targetOverlay, SMOOTH);
+      currentMaskSize = lerp(currentMaskSize, targetMaskSize, SMOOTH);
+      currentParallax = lerp(currentParallax, targetParallax, SMOOTH);
+      currentMaskOpacity = lerp(currentMaskOpacity, targetMaskOpacity, SMOOTH);
 
+      overlay.style.opacity = currentOverlay.toFixed(4);
+      mask.style.opacity = currentMaskOpacity.toFixed(4);
+
+      /* scale() is GPU-composited; avoids mask-size repaints */
+      var scale = currentMaskSize / maskStartSize;
+      mask.style.transform = 'scale(' + scale.toFixed(4) + ')';
+
+      maskImage.style.transform =
+        'translateY(' + currentParallax.toFixed(3) + '%) scale(' + (1 / scale).toFixed(4) + ')';
+
+      /* Keep looping while values are still settling */
+      var stillMoving =
+        Math.abs(currentOverlay - targetOverlay) > 0.0001 ||
+        Math.abs(currentMaskSize - targetMaskSize) > 0.01 ||
+        Math.abs(currentParallax - targetParallax) > 0.01 ||
+        Math.abs(currentMaskOpacity - targetMaskOpacity) > 0.0001;
+
+      if (stillMoving) {
+        rafId = requestAnimationFrame(loop);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function loop() {
+      readScroll();
+      writeFrame();
+    }
+
+    /* ── Scroll handler — just kicks off the RAF loop ── */
+    function onScroll() {
+      if (!rafId) {
+        rafId = requestAnimationFrame(loop);
+      }
+    }
+
+    /* ── Resize handler ── */
+    function onResize() {
+      isMobile = window.innerWidth <= 768;
+      logoUrl = isMobile ? logoMobile : logoDesktop;
+
+      mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
+      mask.style.maskImage = 'url(' + logoUrl + ')';
+
+      viewportHeight = window.innerHeight;
+      scrollRoom = (scrollHeightVh / 100) * viewportHeight;
+      container.style.height = viewportHeight + scrollRoom + 'px';
+      cacheContainerTop();
+
+      onScroll();
+    }
+
+    /* ── Initialize ── */
+    mask.style.webkitMaskSize = maskStartSize + '%';
+    mask.style.maskSize = maskStartSize + '%';
+    mask.style.transformOrigin = 'center center';
+    maskImage.style.transformOrigin = 'center center';
+    overlay.style.opacity = '0';
+
+    /* ── Event listeners ── */
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener(
-      'resize',
-      function () {
-        scrollRoom = window.innerHeight * 2.2;
-        wrapper.style.height = window.innerHeight + scrollRoom + 'px';
-        onScroll();
-      },
-      { passive: true }
-    );
+    window.addEventListener('resize', onResize, { passive: true });
 
-    onScroll();
+    /* ── Initial render ── */
+    readScroll();
+    writeFrame();
   })();
 {% endjavascript %}
 
 {% schema %}
 {
-  "name": "t:sections.hero_banner.name",
+  "name": "t:sections.hero_mask.name",
   "settings": [
     {
       "type": "image_picker",
       "id": "image",
-      "label": "t:sections.hero_banner.image"
+      "label": "t:sections.hero_mask.image",
+      "info": "t:sections.hero_mask.image_info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.hero_mask.animation_settings"
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 50,
+      "max": 500,
+      "step": 50,
+      "unit": "vh",
+      "label": "t:sections.hero_mask.scroll_height",
+      "info": "t:sections.hero_mask.scroll_height_info",
+      "default": 150
     },
     {
       "type": "range",
       "id": "overlay_opacity",
       "min": 0,
-      "max": 80,
+      "max": 100,
       "step": 5,
       "unit": "%",
-      "label": "t:sections.hero_banner.overlay_opacity",
-      "default": 40
+      "label": "t:sections.hero_mask.overlay_opacity",
+      "info": "t:sections.hero_mask.overlay_opacity_info",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "mask_start_size",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "t:sections.hero_mask.mask_start_size",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "mask_end_size",
+      "min": 100,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "t:sections.hero_mask.mask_end_size",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "parallax_amount",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "t:sections.hero_mask.parallax_amount",
+      "info": "t:sections.hero_mask.parallax_amount_info",
+      "default": 20
     }
   ],
   "presets": [
     {
-      "name": "t:sections.hero_banner.name"
+      "name": "t:sections.hero_mask.name"
     }
   ]
 }

@@ -40,6 +40,21 @@
       "image": "Background image",
       "overlay_opacity": "Overlay opacity"
     },
+    "hero_mask": {
+      "name": "Hero mask reveal",
+      "description": "Premium editorial scroll animation with SVG text mask",
+      "image": "Background image",
+      "image_info": "Same image used for both background and mask layers",
+      "animation_settings": "Animation settings",
+      "scroll_height": "Scroll distance",
+      "scroll_height_info": "Total scroll distance for animation completion",
+      "overlay_opacity": "White overlay opacity",
+      "overlay_opacity_info": "Maximum opacity of white fade overlay",
+      "mask_start_size": "Mask start size",
+      "mask_end_size": "Mask end size",
+      "parallax_amount": "Parallax effect",
+      "parallax_amount_info": "Vertical movement of masked image"
+    },
     "featured_collection": {
       "name": "Featured collection",
       "label": "Section label",
