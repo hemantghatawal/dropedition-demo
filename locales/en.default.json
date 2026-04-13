@@ -17,6 +17,7 @@
     "menu": "Navigation menu",
     "customer_account_menu": "Customer account menu",
     "background": "Background color",
+    "background_image": "Background image",
     "foreground": "Foreground color",
     "color_primary": "Primary color",
     "color_secondary": "Secondary color",
@@ -76,6 +77,14 @@
       "name": "Journals",
       "heading": "Heading",
       "main_image": "Main image"
+    },
+    "newsletter": {
+      "name": "Newsletter",
+      "heading": "Heading",
+      "overlay_opacity": "Overlay opacity",
+      "email_placeholder": "Your email address",
+      "subscribe": "Subscribe",
+      "success": "Thanks for subscribing!"
     }
   },
   "header": {

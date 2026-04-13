@@ -70,11 +70,19 @@
       "name": "Journals",
       "heading": "Heading",
       "main_image": "Main image"
+    },
+    "newsletter": {
+      "name": "Newsletter",
+      "heading": "Heading",
+      "heading_line1": "Heading line 1",
+      "heading_line2": "Heading line 2",
+      "overlay_opacity": "Overlay opacity"
     }
   },
   "labels": {
     "alignment": "Alignment",
     "background": "Background",
+    "background_image": "Background image",
     "foreground": "Foreground",
     "color_primary": "Primary color",
     "color_secondary": "Secondary color",

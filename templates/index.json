@@ -30,6 +30,10 @@
     "journals": {
       "type": "journals",
       "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
     }
   },
   "order": [
@@ -38,6 +42,7 @@
     "living-room",
     "craftsmanship",
     "sort-by-type",
-    "journals"
+    "journals",
+    "newsletter"
   ]
 }
