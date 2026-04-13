@@ -85,6 +85,13 @@
       "email_placeholder": "Your email address",
       "subscribe": "Subscribe",
       "success": "Thanks for subscribing!"
+    },
+    "footer": {
+      "drops": "Drops",
+      "stores": "Stores",
+      "information": "Information",
+      "about_us": "About us",
+      "powered_by": "Powered by"
     }
   },
   "header": {

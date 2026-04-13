@@ -77,6 +77,15 @@
       "heading_line1": "Heading line 1",
       "heading_line2": "Heading line 2",
       "overlay_opacity": "Overlay opacity"
+    },
+    "footer": {
+      "video_url": "Background video URL",
+      "drops_menu": "Drops menu",
+      "stores_menu": "Stores menu",
+      "info_menu": "Information menu",
+      "about_text": "About us text",
+      "wordmark": "Wordmark text",
+      "instagram_url": "Instagram URL"
     }
   },
   "labels": {
