@@ -211,6 +211,7 @@
   @media (max-width: 768px) {
     .living-room__grid {
       grid-template-columns: 1fr;
+      height: auto;
     }
 
     .living-room__cell--large {
@@ -218,15 +219,18 @@
       min-height: 280px;
     }
 
-    .living-room__cell--top-right {
-      height: 45vw;
-      min-height: 200px;
+    .living-room__col-right {
+      height: auto;
     }
 
-    .living-room__cell--bottom-right,
-    .living-room__cell--extra {
-      height: 40vw;
-      min-height: 160px;
+    .living-room__right-grid {
+      height: auto;
+    }
+
+    .living-room__cell--small,
+    .living-room__cell--cta {
+      aspect-ratio: 1;
+      min-height: unset;
     }
 
     .living-room__cta-wrap {
