@@ -1,0 +1,1051 @@
+{%- comment -%}
+  Hero Banner with Featured Collection
+  - Scroll-driven hero mask animation
+  - Featured collection slides up as hero shrinks
+  - Synchronized animations in single section
+{%- endcomment -%}
+
+{%- liquid
+  assign scroll_height = section.settings.scroll_height | default: 150
+  assign mask_start_size = section.settings.mask_start_size | default: 80
+  assign mask_end_size = section.settings.mask_end_size | default: 110
+  assign parallax_amount = section.settings.parallax_amount | default: 20
+-%}
+
+<div
+  class="hero-collection-wrapper full-width"
+  id="hero-collection-wrapper"
+  data-scroll-height="{{ scroll_height }}"
+  data-mask-start="{{ mask_start_size }}"
+  data-mask-end="{{ mask_end_size }}"
+  data-parallax="{{ parallax_amount }}"
+  data-logo-desktop="{{ 'logo.svg' | asset_url }}"
+  data-logo-mobile="{{ 'logo-s.svg' | asset_url }}"
+>
+  {%- comment -%} Hero Banner Section {%- endcomment -%}
+  <div class="hero-sticky-wrapper" id="hero-sticky-wrapper">
+    <div class="hero-bg-wrapper">
+      <div class="hero-bg">
+        {%- if section.settings.hero_image != blank -%}
+          <img
+            src="{{ section.settings.hero_image | image_url: width: 2400 }}"
+            alt="{{ section.settings.hero_image.alt | escape }}"
+            class="hero-bg__image"
+            loading="eager"
+            fetchpriority="high"
+            width="{{ section.settings.hero_image.width }}"
+            height="{{ section.settings.hero_image.height }}"
+          >
+        {%- else -%}
+          <img
+            src="{{ 'hero-banner.jpg' | asset_url }}"
+            alt=""
+            class="hero-bg__image"
+            loading="eager"
+            fetchpriority="high"
+            width="2400"
+            height="1350"
+          >
+        {%- endif -%}
+      </div>
+      <div class="hero-overlay" id="hero-overlay"></div>
+    </div>
+
+    <div class="hero-mask" id="hero-mask">
+      {%- if section.settings.hero_image != blank -%}
+        <img
+          src="{{ section.settings.hero_image | image_url: width: 2400 }}"
+          alt=""
+          class="hero-mask__image"
+          id="hero-mask-image"
+          loading="eager"
+          width="{{ section.settings.hero_image.width }}"
+          height="{{ section.settings.hero_image.height }}"
+        >
+      {%- else -%}
+        <img
+          src="{{ 'hero-banner.jpg' | asset_url }}"
+          alt=""
+          class="hero-mask__image"
+          id="hero-mask-image"
+          loading="eager"
+          width="2400"
+          height="1350"
+        >
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Featured Collection Section {%- endcomment -%}
+  <section class="featured-collection" id="featured-collection">
+    <div class="featured-collection__header">
+      <p class="featured-collection__label">{{ section.settings.collection_label | escape }}</p>
+    </div>
+
+    <div class="featured-collection__stage" id="fc-stage">
+      <div class="featured-collection__track" id="fc-track">
+        {%- for i in (1..6) -%}
+          {%- assign img_name = 'bestseller-' | append: i | append: '.avif' -%}
+          <div class="featured-collection__slide" data-index="{{ forloop.index0 }}">
+            <img
+              src="{{ img_name | asset_url }}"
+              alt="{{ section.settings.collection_label | escape }} {{ i }}"
+              class="featured-collection__img"
+              loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
+              width="800"
+              height="1000"
+            >
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div
+        class="featured-collection__zone featured-collection__zone--prev"
+        id="fc-prev"
+        role="button"
+        tabindex="0"
+        aria-label="{{ 'sections.featured_collection.prev' | t }}"
+      ></div>
+      <div
+        class="featured-collection__zone featured-collection__zone--next"
+        id="fc-next"
+        role="button"
+        tabindex="0"
+        aria-label="{{ 'sections.featured_collection.next' | t }}"
+      ></div>
+
+      <div class="featured-collection__cursor" id="fc-cursor">
+        <svg
+          class="featured-collection__cursor-arrow featured-collection__cursor-arrow--left"
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="112" y1="6" x2="0" y2="6"/>
+          <polyline points="8,0 0,6 8,12"/>
+        </svg>
+        <svg
+          class="featured-collection__cursor-arrow featured-collection__cursor-arrow--right"
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="0" y1="6" x2="112" y2="6"/>
+          <polyline points="104,0 112,6 104,12"/>
+        </svg>
+      </div>
+
+      <div class="featured-collection__card">
+        <span class="featured-collection__card-number">{{ section.settings.card_number }}</span>
+        <p class="featured-collection__card-text">{{ section.settings.card_text | escape }}</p>
+        <a href="{{ section.settings.card_cta_url | default: '#' }}" class="featured-collection__card-cta">
+          {{- section.settings.card_cta_label | escape -}}
+        </a>
+      </div>
+    </div>
+
+    <div class="featured-collection__tablet-nav">
+      <button
+        class="featured-collection__nav-btn"
+        id="fc-prev-tablet"
+        aria-label="{{ 'sections.featured_collection.prev' | t }}"
+      >
+        <svg
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="112" y1="6" x2="0" y2="6"/>
+          <polyline points="8,0 0,6 8,12"/>
+        </svg>
+      </button>
+      <button
+        class="featured-collection__nav-btn"
+        id="fc-next-tablet"
+        aria-label="{{ 'sections.featured_collection.next' | t }}"
+      >
+        <svg
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="0" y1="6" x2="112" y2="6"/>
+          <polyline points="104,0 112,6 104,12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="featured-collection__mobile-nav">
+      <button
+        class="featured-collection__nav-btn"
+        id="fc-prev-mobile"
+        aria-label="{{ 'sections.featured_collection.prev' | t }}"
+      >
+        <svg
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="112" y1="6" x2="0" y2="6"/>
+          <polyline points="8,0 0,6 8,12"/>
+        </svg>
+      </button>
+      <button
+        class="featured-collection__nav-btn"
+        id="fc-next-mobile"
+        aria-label="{{ 'sections.featured_collection.next' | t }}"
+      >
+        <svg
+          width="112"
+          height="12"
+          viewBox="0 0 112 12"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="0" y1="6" x2="112" y2="6"/>
+          <polyline points="104,0 112,6 104,12"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+</div>
+
+{% stylesheet %}
+  /* ── Wrapper Container ── */
+  .hero-collection-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  /* ── Hero Sticky Wrapper ── */
+  .hero-sticky-wrapper {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    will-change: height;
+    z-index: 1;
+  }
+
+  .hero-bg-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    will-change: transform;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-color: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  .hero-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background: transparent;
+    opacity: 0;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+
+  .hero-mask__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    filter: contrast(1.15) saturate(1.1) brightness(1.05);
+    will-change: transform;
+  }
+
+  /* ── Featured Collection ── */
+  .featured-collection {
+    position: relative;
+    width: 100%;
+    background-color: var(--color-bg);
+    padding-top: var(--space-lg);
+    overflow: hidden;
+    font-family: var(--font-primary);
+    margin-top: -50vh;
+    z-index: 20;
+    transform: translateY(0);
+    will-change: transform;
+  }
+
+  .featured-collection__header {
+    width: 100%;
+    padding: 0 var(--page-margin) var(--space-md);
+    text-align: center;
+  }
+
+  .featured-collection__label {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  .featured-collection__stage {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    min-height: 560px;
+    cursor: none;
+    overflow: hidden;
+  }
+
+  .featured-collection__track {
+    position: absolute;
+    inset: 0;
+  }
+
+  .featured-collection__slide {
+    position: absolute;
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), width 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.75s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+  }
+
+  .featured-collection__slide.is-active {
+    width: 30vw;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    opacity: 1;
+  }
+
+  .featured-collection__slide.is-side-left {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% - 50vw + 6vw), -50%);
+    z-index: 2;
+    opacity: 1;
+  }
+
+  .featured-collection__slide.is-side-right {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% + 50vw - 6vw), -50%);
+    z-index: 2;
+    opacity: 1;
+  }
+
+  .featured-collection__slide.is-hidden-left {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% - 120vw), -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .featured-collection__slide.is-hidden-right {
+    width: 22vw;
+    height: calc(100% - 100px);
+    transform: translate(calc(-50% + 120vw), -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .featured-collection__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    pointer-events: none;
+  }
+
+  .featured-collection__zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: 5;
+  }
+
+  .featured-collection__zone--prev {
+    left: 0;
+  }
+  .featured-collection__zone--next {
+    right: 0;
+  }
+
+  .featured-collection__cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.6);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    color: #000000;
+  }
+
+  .featured-collection__cursor.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .featured-collection__cursor-arrow {
+    position: absolute;
+    transition: opacity 0.15s ease;
+  }
+
+  .featured-collection__cursor-arrow--left {
+    opacity: 0;
+  }
+  .featured-collection__cursor-arrow--right {
+    opacity: 1;
+  }
+
+  .featured-collection__cursor.show-left .featured-collection__cursor-arrow--left {
+    opacity: 1;
+  }
+  .featured-collection__cursor.show-left .featured-collection__cursor-arrow--right {
+    opacity: 0;
+  }
+  .featured-collection__cursor.show-right .featured-collection__cursor-arrow--left {
+    opacity: 0;
+  }
+  .featured-collection__cursor.show-right .featured-collection__cursor-arrow--right {
+    opacity: 1;
+  }
+
+  .featured-collection__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% + 8vw), calc(-50% + 4vh));
+    z-index: 10;
+    width: 300px;
+    padding: var(--space-lg) var(--space-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    pointer-events: none;
+  }
+
+  .featured-collection__card-cta {
+    pointer-events: auto;
+  }
+
+  .featured-collection__card-number {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .featured-collection__card-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-fg);
+    line-height: 1.6;
+    opacity: 0.85;
+    margin: 0;
+  }
+
+  .featured-collection__card-cta {
+    display: inline-block;
+    margin-top: auto;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-fg);
+    color: var(--color-fg);
+    background-color: transparent;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color var(--transition-base), color var(--transition-base);
+  }
+
+  .featured-collection__card-cta:hover {
+    background-color: var(--color-fg);
+    color: var(--color-text-light);
+  }
+
+  .featured-collection__tablet-nav,
+  .featured-collection__mobile-nav {
+    display: none;
+  }
+
+  .featured-collection__nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-sm);
+    color: var(--color-fg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--transition-fast);
+  }
+
+  .featured-collection__nav-btn:hover {
+    opacity: 0.5;
+  }
+  .featured-collection__nav-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .featured-collection__stage {
+      height: 75vh;
+      cursor: auto;
+    }
+
+    .featured-collection__slide.is-active {
+      width: 40vw;
+      height: 70%;
+    }
+
+    .featured-collection__slide.is-side-left {
+      width: 28vw;
+      height: calc(100% - 80px);
+      transform: translate(calc(-50% - 50vw + 5vw), -50%);
+    }
+
+    .featured-collection__slide.is-side-right {
+      width: 28vw;
+      height: calc(100% - 80px);
+      transform: translate(calc(-50% + 50vw - 5vw), -50%);
+    }
+
+    .featured-collection__zone {
+      display: none;
+    }
+    .featured-collection__cursor {
+      display: none;
+    }
+
+    .featured-collection__tablet-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-xl);
+      padding: var(--space-md) var(--page-margin);
+    }
+
+    .featured-collection__card {
+      transform: translate(calc(-50% + 6vw), calc(-50% + 3vh));
+      width: 240px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero-sticky-wrapper {
+      min-height: 500px;
+    }
+
+    .featured-collection__stage {
+      height: 80vh;
+      cursor: auto;
+    }
+
+    .featured-collection__slide.is-active {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 27vw), calc(-50% - 8%));
+      z-index: 3;
+      opacity: 1;
+    }
+
+    .featured-collection__slide.is-side-right {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% + 27vw), calc(-50% + 8%));
+      z-index: 2;
+      opacity: 1;
+    }
+
+    .featured-collection__slide.is-side-left {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 130vw), calc(-50% - 8%));
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .featured-collection__slide.is-hidden-left {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% - 130vw), calc(-50% - 8%));
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .featured-collection__slide.is-hidden-right {
+      width: 44vw;
+      height: 62%;
+      transform: translate(calc(-50% + 130vw), calc(-50% + 8%));
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .featured-collection__card {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      padding: var(--space-md);
+    }
+
+    .featured-collection__zone {
+      display: none;
+    }
+    .featured-collection__cursor {
+      display: none;
+    }
+
+    .featured-collection__mobile-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-xl);
+      padding: var(--space-md) var(--page-margin);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var wrapper = document.getElementById('hero-collection-wrapper');
+    var heroWrapper = document.getElementById('hero-sticky-wrapper');
+    var overlay = document.getElementById('hero-overlay');
+    var mask = document.getElementById('hero-mask');
+    var maskImage = document.getElementById('hero-mask-image');
+    var featuredSection = document.getElementById('featured-collection');
+
+    if (!wrapper || !heroWrapper || !overlay || !mask || !maskImage || !featuredSection) return;
+
+    /* ── Configuration ── */
+    var scrollHeightVh = parseInt(wrapper.getAttribute('data-scroll-height')) || 150;
+    var maskStartSize = parseInt(wrapper.getAttribute('data-mask-start')) || 80;
+    var maskEndSize = parseInt(wrapper.getAttribute('data-mask-end')) || 110;
+    var parallaxAmount = parseInt(wrapper.getAttribute('data-parallax')) || 20;
+
+    var logoDesktop = wrapper.getAttribute('data-logo-desktop');
+    var logoMobile = wrapper.getAttribute('data-logo-mobile');
+    var isMobile = window.innerWidth <= 768;
+    var logoUrl = isMobile ? logoMobile : logoDesktop;
+
+    mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
+    mask.style.maskImage = 'url(' + logoUrl + ')';
+
+    var viewportHeight = window.innerHeight;
+    var wrapperTop = 0;
+    var scrollRoom = (scrollHeightVh / 100) * viewportHeight;
+    wrapper.style.height = viewportHeight + scrollRoom + 'px';
+
+    function cacheWrapperTop() {
+      wrapperTop = wrapper.getBoundingClientRect().top + window.scrollY;
+    }
+    cacheWrapperTop();
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    /* ── Smoothed values ── */
+    var currentMaskSize = maskStartSize;
+    var currentOverlay = 0;
+    var currentParallax = 0;
+    var currentMaskOpacity = 0;
+    var currentWrapperHeight = 100;
+    var currentFeaturedTranslate = 0;
+
+    var targetMaskSize = maskStartSize;
+    var targetOverlay = 0;
+    var targetParallax = 0;
+    var targetMaskOpacity = 0;
+    var targetWrapperHeight = 100;
+    var targetFeaturedTranslate = 0;
+
+    var SMOOTH = 0.25;
+    var rafId = null;
+
+    function readScroll() {
+      var scrolled = window.scrollY - wrapperTop;
+      var progress = clamp(scrolled / scrollRoom, 0, 1);
+      var t = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      targetOverlay = t * 0.6;
+      targetMaskSize = lerp(maskStartSize, maskEndSize, t);
+      targetParallax = t * parallaxAmount;
+      targetMaskOpacity = clamp((progress - 0.05) / 0.15, 0, 1);
+
+      /* Shrink hero and slide up featured collection together at 70% */
+      if (progress > 0.7) {
+        var shrinkProgress = (progress - 0.7) / 0.3;
+        targetWrapperHeight = 100 - shrinkProgress * 90;
+        targetFeaturedTranslate = -200 * shrinkProgress;
+      } else {
+        targetWrapperHeight = 100;
+        targetFeaturedTranslate = 0;
+      }
+    }
+
+    function writeFrame() {
+      currentOverlay = lerp(currentOverlay, targetOverlay, SMOOTH);
+      currentMaskSize = lerp(currentMaskSize, targetMaskSize, SMOOTH);
+      currentParallax = lerp(currentParallax, targetParallax, SMOOTH);
+      currentMaskOpacity = lerp(currentMaskOpacity, targetMaskOpacity, SMOOTH);
+      currentWrapperHeight = lerp(currentWrapperHeight, targetWrapperHeight, SMOOTH);
+      currentFeaturedTranslate = lerp(currentFeaturedTranslate, targetFeaturedTranslate, SMOOTH);
+
+      overlay.style.opacity = currentOverlay.toFixed(4);
+      mask.style.opacity = currentMaskOpacity.toFixed(4);
+      heroWrapper.style.height = currentWrapperHeight.toFixed(2) + 'vh';
+      featuredSection.style.transform = 'translateY(' + currentFeaturedTranslate.toFixed(2) + 'px)';
+
+      var scale = currentMaskSize / maskStartSize;
+      mask.style.transform = 'scale(' + scale.toFixed(4) + ')';
+      maskImage.style.transform =
+        'translateY(' + currentParallax.toFixed(3) + '%) scale(' + (1 / scale).toFixed(4) + ')';
+
+      var stillMoving =
+        Math.abs(currentOverlay - targetOverlay) > 0.0001 ||
+        Math.abs(currentMaskSize - targetMaskSize) > 0.01 ||
+        Math.abs(currentParallax - targetParallax) > 0.01 ||
+        Math.abs(currentMaskOpacity - targetMaskOpacity) > 0.0001 ||
+        Math.abs(currentWrapperHeight - targetWrapperHeight) > 0.1 ||
+        Math.abs(currentFeaturedTranslate - targetFeaturedTranslate) > 0.1;
+
+      if (stillMoving) {
+        rafId = requestAnimationFrame(loop);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function loop() {
+      readScroll();
+      writeFrame();
+    }
+
+    function onScroll() {
+      if (!rafId) {
+        rafId = requestAnimationFrame(loop);
+      }
+    }
+
+    function onResize() {
+      isMobile = window.innerWidth <= 768;
+      logoUrl = isMobile ? logoMobile : logoDesktop;
+      mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
+      mask.style.maskImage = 'url(' + logoUrl + ')';
+      viewportHeight = window.innerHeight;
+      scrollRoom = (scrollHeightVh / 100) * viewportHeight;
+      wrapper.style.height = viewportHeight + scrollRoom + 'px';
+      cacheWrapperTop();
+      onScroll();
+    }
+
+    mask.style.webkitMaskSize = maskStartSize + '%';
+    mask.style.maskSize = maskStartSize + '%';
+    mask.style.transformOrigin = 'center center';
+    maskImage.style.transformOrigin = 'center center';
+    overlay.style.opacity = '0';
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+
+    readScroll();
+    writeFrame();
+
+    /* ── Featured Collection Slider ── */
+    var TOTAL = 6;
+    var current = 1;
+    var track = document.getElementById('fc-track');
+    var stage = document.getElementById('fc-stage');
+    var cursor = document.getElementById('fc-cursor');
+    var zoneNext = document.getElementById('fc-next');
+    var zonePrev = document.getElementById('fc-prev');
+    var tabletNext = document.getElementById('fc-next-tablet');
+    var tabletPrev = document.getElementById('fc-prev-tablet');
+    var mobileNext = document.getElementById('fc-next-mobile');
+    var mobilePrev = document.getElementById('fc-prev-mobile');
+    var slides = Array.from(track.querySelectorAll('.featured-collection__slide'));
+
+    function render() {
+      slides.forEach(function (slide, i) {
+        slide.classList.remove('is-active', 'is-side-left', 'is-side-right', 'is-hidden-left', 'is-hidden-right');
+        if (i === current) {
+          slide.classList.add('is-active');
+        } else if (i === current - 1) {
+          slide.classList.add('is-side-left');
+        } else if (i === current + 1) {
+          slide.classList.add('is-side-right');
+        } else if (i < current) {
+          slide.classList.add('is-hidden-left');
+        } else {
+          slide.classList.add('is-hidden-right');
+        }
+      });
+
+      var atStart = current === 0;
+      var atEnd = current === TOTAL - 1;
+      zoneNext.style.pointerEvents = atEnd ? 'none' : 'auto';
+      zonePrev.style.pointerEvents = atStart ? 'none' : 'auto';
+      tabletNext.disabled = atEnd;
+      tabletPrev.disabled = atStart;
+      mobileNext.disabled = atEnd;
+      mobilePrev.disabled = atStart;
+    }
+
+    function goNext() {
+      if (current < TOTAL - 1) {
+        current++;
+        render();
+      }
+    }
+    function goPrev() {
+      if (current > 0) {
+        current--;
+        render();
+      }
+    }
+
+    zoneNext.addEventListener('click', goNext);
+    zonePrev.addEventListener('click', goPrev);
+    zoneNext.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') goNext();
+    });
+    zonePrev.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') goPrev();
+    });
+
+    tabletNext.addEventListener('click', goNext);
+    tabletPrev.addEventListener('click', goPrev);
+    mobileNext.addEventListener('click', goNext);
+    mobilePrev.addEventListener('click', goPrev);
+
+    stage.addEventListener('mouseenter', function () {
+      cursor.classList.add('is-visible');
+    });
+    stage.addEventListener('mouseleave', function () {
+      cursor.classList.remove('is-visible', 'show-left', 'show-right');
+    });
+    stage.addEventListener('mousemove', function (e) {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      var half = stage.getBoundingClientRect().left + stage.offsetWidth / 2;
+      if (e.clientX < half) {
+        cursor.classList.remove('show-right');
+        cursor.classList.add('show-left');
+        cursor.style.opacity = current > 0 ? '1' : '0.3';
+      } else {
+        cursor.classList.remove('show-left');
+        cursor.classList.add('show-right');
+        cursor.style.opacity = current < TOTAL - 1 ? '1' : '0.3';
+      }
+    });
+
+    var touchStartX = 0;
+    stage.addEventListener(
+      'touchstart',
+      function (e) {
+        touchStartX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+    stage.addEventListener(
+      'touchend',
+      function (e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) goNext();
+          else goPrev();
+        }
+      },
+      { passive: true }
+    );
+
+    render();
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Hero with Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 50,
+      "max": 500,
+      "step": 50,
+      "unit": "vh",
+      "label": "Scroll Height",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "mask_start_size",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Mask Start Size",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "mask_end_size",
+      "min": 100,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Mask End Size",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "parallax_amount",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Parallax Amount",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Featured Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_label",
+      "label": "Collection Label",
+      "default": "Bestseller"
+    },
+    {
+      "type": "text",
+      "id": "card_number",
+      "label": "Card Number",
+      "default": "06"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text",
+      "label": "Card Text",
+      "default": "Drop 6 channels 90's retro elegance, where timeless closet pieces are reborn with a modern edge."
+    },
+    {
+      "type": "text",
+      "id": "card_cta_label",
+      "label": "CTA Label",
+      "default": "Shop all"
+    },
+    {
+      "type": "url",
+      "id": "card_cta_url",
+      "label": "CTA URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero with Collection"
+    }
+  ]
+}
+{% endschema %}
