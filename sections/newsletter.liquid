@@ -215,18 +215,69 @@
       var STRENGTH = 18;
       var LERP = 0.06;
 
-      section.addEventListener('mousemove', function (e) {
-        var rect = section.getBoundingClientRect();
-        var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        var ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-        targetX = nx * STRENGTH;
-        targetY = ny * STRENGTH;
-      });
+      var isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
-      section.addEventListener('mouseleave', function () {
-        targetX = 0;
-        targetY = 0;
-      });
+      if (isTouchDevice) {
+        // Use device orientation (gyroscope) on mobile/tablet
+        var baseGamma = null;
+        var baseBeta = null;
+
+        function handleOrientation(e) {
+          // gamma: left/right tilt (-90 to 90), beta: front/back tilt (-180 to 180)
+          var gamma = e.gamma || 0;
+          var beta = e.beta || 0;
+
+          if (baseGamma === null) {
+            baseGamma = gamma;
+            baseBeta = beta;
+          }
+
+          var dx = gamma - baseGamma;
+          var dy = beta - baseBeta;
+
+          // Clamp to ±30 degrees for reasonable range
+          dx = Math.max(-30, Math.min(30, dx));
+          dy = Math.max(-30, Math.min(30, dy));
+
+          targetX = (dx / 30) * STRENGTH;
+          targetY = (dy / 30) * STRENGTH;
+        }
+
+        if (
+          typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function'
+        ) {
+          // iOS 13+ requires permission
+          section.addEventListener(
+            'click',
+            function requestOnce() {
+              DeviceOrientationEvent.requestPermission().then(function (state) {
+                if (state === 'granted') {
+                  window.addEventListener('deviceorientation', handleOrientation);
+                }
+              });
+              section.removeEventListener('click', requestOnce);
+            },
+            { once: true }
+          );
+        } else {
+          window.addEventListener('deviceorientation', handleOrientation);
+        }
+      } else {
+        // Desktop: mouse parallax
+        section.addEventListener('mousemove', function (e) {
+          var rect = section.getBoundingClientRect();
+          var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          var ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+          targetX = nx * STRENGTH;
+          targetY = ny * STRENGTH;
+        });
+
+        section.addEventListener('mouseleave', function () {
+          targetX = 0;
+          targetY = 0;
+        });
+      }
 
       function animate() {
         currentX += (targetX - currentX) * LERP;
