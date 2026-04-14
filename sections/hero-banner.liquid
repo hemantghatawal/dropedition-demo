@@ -247,7 +247,8 @@
     var targetParallax = 0;
     var targetMaskOpacity = 0;
 
-    var SMOOTH = 0.25;
+    var SMOOTH = 0.08;
+    var SMOOTH_OPACITY = 0.05;
     var rafId = null;
 
     /* ── Read scroll ── */
@@ -255,12 +256,12 @@
       var scrolled = window.scrollY - containerTop;
       var progress = clamp(scrolled / scrollRoom, 0, 1);
 
-      var t = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      var t = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       targetOverlay = t * 0.8;
       targetMaskSize = lerp(maskStartSize, maskEndSize, t);
       targetParallax = t * parallaxAmount;
-      targetMaskOpacity = clamp(progress / 0.05, 0, 1);
+      targetMaskOpacity = clamp(progress / 0.15, 0, 1);
     }
 
     /* ── Write frame ── */
@@ -270,7 +271,7 @@
       currentOverlay = lerp(currentOverlay, targetOverlay, SMOOTH);
       currentMaskSize = lerp(currentMaskSize, targetMaskSize, SMOOTH);
       currentParallax = lerp(currentParallax, targetParallax, SMOOTH);
-      currentMaskOpacity = lerp(currentMaskOpacity, targetMaskOpacity, SMOOTH);
+      currentMaskOpacity = lerp(currentMaskOpacity, targetMaskOpacity, SMOOTH_OPACITY);
 
       overlay.style.opacity = currentOverlay.toFixed(4);
       mask.style.opacity = currentMaskOpacity.toFixed(4);
@@ -285,7 +286,7 @@
         Math.abs(currentOverlay - targetOverlay) > 0.0001 ||
         Math.abs(currentMaskSize - targetMaskSize) > 0.01 ||
         Math.abs(currentParallax - targetParallax) > 0.01 ||
-        Math.abs(currentMaskOpacity - targetMaskOpacity) > 0.0001;
+        Math.abs(currentMaskOpacity - targetMaskOpacity) > 0.0005;
 
       if (stillMoving) rafId = requestAnimationFrame(writeFrame);
     }
