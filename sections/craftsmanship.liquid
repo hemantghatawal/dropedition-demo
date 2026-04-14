@@ -116,10 +116,11 @@
 
   .craftsmanship__text--right {
     bottom: 10%;
-    left: 55%;
+    left: clamp(30%, 15% + 3vw, 35%);
     text-align: left;
-    font-size: clamp(2.5rem, 4vw, 3.3rem);
-    line-height: 1.2;
+    font-size: clamp(4.25rem, 6.8vw, 5.6rem);
+    line-height: 0.7;
+    max-width: calc(75% - var(--page-margin));
   }
 
   .craftsmanship__text--right .craftsmanship__line {
@@ -134,8 +135,16 @@
 
   .craftsmanship__char {
     display: inline-block;
-    letter-spacing: 0.5em;
+    letter-spacing: 0.04em;
     transition: letter-spacing 0.6s ease;
+  }
+
+  .craftsmanship__text--left .craftsmanship__char {
+    letter-spacing: 1em;
+  }
+
+  .craftsmanship__text--right .craftsmanship__char {
+    letter-spacing: 0.3em;
   }
 
   /* ── Responsive ── */
@@ -163,12 +172,19 @@
     .craftsmanship__text--right {
       position: absolute;
       bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: clamp(1.4rem, 6vw, 2rem);
+      left: var(--page-margin);
+      right: var(--page-margin);
+      transform: none;
+      font-size: clamp(2rem, 9vw, 3rem);
       text-align: left;
       width: auto;
       max-width: 100%;
+      overflow: hidden;
+    }
+
+    .craftsmanship__text--right .craftsmanship__line {
+      white-space: nowrap !important;
+      overflow: visible;
     }
   }
 {% endstylesheet %}
@@ -204,17 +220,18 @@
       });
     }
 
-    /* ── Animate chars: all lines together, random order ── */
-    var animated = false;
+    /* ── Animate chars: both texts ── */
+    var animatedLeft = false;
+    var animatedRight = false;
 
-    function animateChars() {
-      if (animated) return;
-      animated = true;
+    function animateLeftChars() {
+      if (animatedLeft) return;
+      animatedLeft = true;
 
-      var chars = section.querySelectorAll('.craftsmanship__char');
+      var chars = section.querySelectorAll('.craftsmanship__text--left .craftsmanship__char');
 
       chars.forEach(function (char) {
-        var delay = Math.random() * 1200; /* random delay up to 1200ms */
+        var delay = Math.random() * 1200;
 
         setTimeout(function () {
           char.style.letterSpacing = '0.25em';
@@ -228,18 +245,53 @@
       });
     }
 
+    function animateRightChars() {
+      if (animatedRight) return;
+      animatedRight = true;
+
+      var chars = section.querySelectorAll('.craftsmanship__text--right .craftsmanship__char');
+
+      chars.forEach(function (char) {
+        var delay = Math.random() * 1200;
+
+        setTimeout(function () {
+          char.style.letterSpacing = '0.1em';
+        }, delay);
+        setTimeout(function () {
+          char.style.letterSpacing = '0.06em';
+        }, delay + 400);
+        setTimeout(function () {
+          char.style.letterSpacing = '0.04em';
+        }, delay + 800);
+      });
+    }
+
     splitChars();
 
-    var observer = new IntersectionObserver(
+    /* Observe both text blocks */
+    var textLeft = section.querySelector('.craftsmanship__text--left');
+    var textRight = section.querySelector('.craftsmanship__text--right');
+
+    var observerLeft = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) animateChars();
+          if (entry.isIntersecting) animateLeftChars();
         });
       },
       { threshold: 0.3 }
     );
 
-    observer.observe(section);
+    var observerRight = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) animateRightChars();
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (textLeft) observerLeft.observe(textLeft);
+    if (textRight) observerRight.observe(textRight);
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
