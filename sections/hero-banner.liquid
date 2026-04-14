@@ -10,7 +10,7 @@
   assign scroll_height = section.settings.scroll_height | default: 150
   assign mask_start_size = section.settings.mask_start_size | default: 80
   assign mask_end_size = section.settings.mask_end_size | default: 110
-  assign overlay_opacity = section.settings.overlay_opacity | default: 90
+  assign overlay_opacity = section.settings.overlay_opacity | default: 80
   assign parallax_amount = section.settings.parallax_amount | default: 20
 -%}
 
@@ -154,6 +154,17 @@
     will-change: transform, opacity;
   }
 
+  /* ── Shimmer on the masked image ── */
+  @keyframes hero-mask-shimmer {
+    0%,
+    100% {
+      filter: contrast(1.15) saturate(1.1) brightness(1.05);
+    }
+    50% {
+      filter: contrast(1.2) saturate(1.18) brightness(1.12);
+    }
+  }
+
   .hero-mask__image {
     position: absolute;
     inset: 0;
@@ -165,7 +176,8 @@
 
     /* Enhanced contrast for masked image */
     filter: contrast(1.15) saturate(1.1) brightness(1.05);
-    will-change: transform;
+    will-change: transform, filter;
+    animation: hero-mask-shimmer 4s ease-in-out infinite;
   }
 
   /* ── Mobile adjustments ── */
@@ -186,78 +198,75 @@
 
     if (!container || !wrapper || !overlay || !mask || !maskImage) return;
 
-    /* ── Configuration from data attributes ── */
-    var scrollHeightVh = parseInt(container.getAttribute('data-scroll-height')) || 300;
+    /* ── Config from data attributes ── */
+    var scrollHeightVh = parseInt(container.getAttribute('data-scroll-height')) || 150;
     var maskStartSize = parseInt(container.getAttribute('data-mask-start')) || 80;
     var maskEndSize = parseInt(container.getAttribute('data-mask-end')) || 110;
     var parallaxAmount = parseInt(container.getAttribute('data-parallax')) || 20;
 
-    /* ── Determine SVG mask based on screen size ── */
+    /* ── SVG mask ── */
     var logoDesktop = container.getAttribute('data-logo-desktop');
     var logoMobile = container.getAttribute('data-logo-mobile');
     var isMobile = window.innerWidth <= 768;
     var logoUrl = isMobile ? logoMobile : logoDesktop;
 
-    /* ── Apply SVG mask ── */
-    mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
-    mask.style.maskImage = 'url(' + logoUrl + ')';
+    function applyMaskUrl() {
+      mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
+      mask.style.maskImage = 'url(' + logoUrl + ')';
+    }
+    applyMaskUrl();
 
-    /* ── Set scroll container height ── */
+    /* ── Dimensions ── */
     var viewportHeight = window.innerHeight;
     var containerTop = 0;
     var scrollRoom = (scrollHeightVh / 100) * viewportHeight;
     container.style.height = viewportHeight + scrollRoom + 'px';
 
-    /* Cache container offset once (avoids reflow on every scroll) */
     function cacheContainerTop() {
       containerTop = container.getBoundingClientRect().top + window.scrollY;
     }
     cacheContainerTop();
 
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
+    /* ── Helpers ── */
+    function clamp(v, lo, hi) {
+      return Math.min(Math.max(v, lo), hi);
     }
-
     function lerp(a, b, t) {
       return a + (b - a) * t;
     }
 
-    /* ── Smoothed display values (interpolated each frame) ── */
+    /* ── Smoothed display values ── */
     var currentMaskSize = maskStartSize;
     var currentOverlay = 0;
     var currentParallax = 0;
     var currentMaskOpacity = 0;
 
-    /* ── Target values driven by scroll position ── */
+    /* ── Targets driven by scroll ── */
     var targetMaskSize = maskStartSize;
     var targetOverlay = 0;
     var targetParallax = 0;
     var targetMaskOpacity = 0;
 
-    /* Smoothing factor — higher = snappier, lower = more lag */
     var SMOOTH = 0.25;
-
     var rafId = null;
 
-    /* ── Read scroll position without triggering layout ── */
+    /* ── Read scroll ── */
     function readScroll() {
       var scrolled = window.scrollY - containerTop;
       var progress = clamp(scrolled / scrollRoom, 0, 1);
 
-      /* Ease-in-out for a more natural feel */
       var t = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
-      targetOverlay = t * 0.60;
+      targetOverlay = t * 0.8;
       targetMaskSize = lerp(maskStartSize, maskEndSize, t);
       targetParallax = t * parallaxAmount;
-
-      /* Fade in mask as user scrolls — starts appearing at 5% scroll */
-      // targetMaskOpacity = clamp((progress - 0.05) / 0.15, 0, 1);
       targetMaskOpacity = clamp(progress / 0.05, 0, 1);
     }
 
-    /* ── Write to DOM — only GPU-composited properties ── */
+    /* ── Write frame ── */
     function writeFrame() {
+      rafId = null;
+
       currentOverlay = lerp(currentOverlay, targetOverlay, SMOOTH);
       currentMaskSize = lerp(currentMaskSize, targetMaskSize, SMOOTH);
       currentParallax = lerp(currentParallax, targetParallax, SMOOTH);
@@ -266,69 +275,54 @@
       overlay.style.opacity = currentOverlay.toFixed(4);
       mask.style.opacity = currentMaskOpacity.toFixed(4);
 
-      /* scale() is GPU-composited; avoids mask-size repaints */
       var scale = currentMaskSize / maskStartSize;
       mask.style.transform = 'scale(' + scale.toFixed(4) + ')';
 
       maskImage.style.transform =
         'translateY(' + currentParallax.toFixed(3) + '%) scale(' + (1 / scale).toFixed(4) + ')';
 
-      /* Keep looping while values are still settling */
       var stillMoving =
         Math.abs(currentOverlay - targetOverlay) > 0.0001 ||
         Math.abs(currentMaskSize - targetMaskSize) > 0.01 ||
         Math.abs(currentParallax - targetParallax) > 0.01 ||
         Math.abs(currentMaskOpacity - targetMaskOpacity) > 0.0001;
 
-      if (stillMoving) {
-        rafId = requestAnimationFrame(loop);
-      } else {
-        rafId = null;
-      }
+      if (stillMoving) rafId = requestAnimationFrame(writeFrame);
     }
 
-    function loop() {
-      readScroll();
-      writeFrame();
+    function kick() {
+      if (!rafId) rafId = requestAnimationFrame(writeFrame);
     }
 
-    /* ── Scroll handler — just kicks off the RAF loop ── */
+    /* ── Scroll handler ── */
     function onScroll() {
-      if (!rafId) {
-        rafId = requestAnimationFrame(loop);
-      }
+      readScroll();
+      kick();
     }
-
-    /* ── Resize handler ── */
     function onResize() {
       isMobile = window.innerWidth <= 768;
       logoUrl = isMobile ? logoMobile : logoDesktop;
-
-      mask.style.webkitMaskImage = 'url(' + logoUrl + ')';
-      mask.style.maskImage = 'url(' + logoUrl + ')';
+      applyMaskUrl();
 
       viewportHeight = window.innerHeight;
       scrollRoom = (scrollHeightVh / 100) * viewportHeight;
       container.style.height = viewportHeight + scrollRoom + 'px';
       cacheContainerTop();
-
       onScroll();
     }
 
-    /* ── Initialize ── */
+    /* ── Init ── */
     mask.style.webkitMaskSize = maskStartSize + '%';
     mask.style.maskSize = maskStartSize + '%';
     mask.style.transformOrigin = 'center center';
     maskImage.style.transformOrigin = 'center center';
     overlay.style.opacity = '0';
 
-    /* ── Event listeners ── */
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize, { passive: true });
 
-    /* ── Initial render ── */
     readScroll();
-    writeFrame();
+    kick();
   })();
 {% endjavascript %}
 
@@ -366,7 +360,7 @@
       "unit": "%",
       "label": "t:sections.hero_mask.overlay_opacity",
       "info": "t:sections.hero_mask.overlay_opacity_info",
-      "default": 90
+      "default": 80
     },
     {
       "type": "range",
