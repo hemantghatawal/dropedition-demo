@@ -244,8 +244,11 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-    /* ── Device orientation parallax (mobile gyroscope) ── */
-    var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    /* ── Device orientation parallax (mobile/tablet gyroscope) ── */
+    /* iPadOS 13+ reports as 'Macintosh', so we use touch + orientation feature detection */
+    var isMobile =
+      /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
 
     if (isMobile && window.DeviceOrientationEvent) {
       var gyroX = 0;
