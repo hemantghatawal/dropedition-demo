@@ -141,8 +141,12 @@
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .craftsmanship__heading {
-      font-size: clamp(1.8rem, 10vw, 3.5rem);
-      letter-spacing: 0.15em;
+      font-size: clamp(1.4rem, 8vw, 3rem);
+      letter-spacing: 0.05em;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      padding: 0 var(--page-margin);
     }
 
     .craftsmanship__text {
@@ -239,6 +243,63 @@
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    /* ── Device orientation parallax (mobile gyroscope) ── */
+    var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+    if (isMobile && window.DeviceOrientationEvent) {
+      var gyroX = 0;
+      var gyroY = 0;
+      var currentX = 0;
+      var currentY = 0;
+      var rafId = null;
+
+      function smoothGyro() {
+        currentX += (gyroX - currentX) * 0.08;
+        currentY += (gyroY - currentY) * 0.08;
+
+        /* Blend gyro offset on top of scroll parallax */
+        var rect = section.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var progress = 1 - rect.bottom / (vh + rect.height);
+        var clampedP = Math.min(Math.max(progress, 0), 1);
+        var scrollY = (clampedP - 0.5) * 30;
+
+        bg.style.transform = 'translateY(' + (scrollY + currentY) + '%) translateX(' + currentX + '%)';
+
+        rafId = requestAnimationFrame(smoothGyro);
+      }
+
+      function onOrientation(e) {
+        /* beta: front-back tilt (-180 to 180), gamma: left-right tilt (-90 to 90) */
+        var beta = e.beta || 0;
+        var gamma = e.gamma || 0;
+
+        /* Clamp and normalise to a small offset range */
+        gyroY = Math.min(Math.max(beta - 45, -30), 30) * 0.08;
+        gyroX = Math.min(Math.max(gamma, -30), 30) * 0.06;
+      }
+
+      /* iOS 13+ requires permission */
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        document.addEventListener(
+          'click',
+          function requestOnce() {
+            DeviceOrientationEvent.requestPermission().then(function (state) {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', onOrientation, { passive: true });
+                smoothGyro();
+              }
+            });
+            document.removeEventListener('click', requestOnce);
+          },
+          { once: true }
+        );
+      } else {
+        window.addEventListener('deviceorientation', onOrientation, { passive: true });
+        smoothGyro();
+      }
+    }
   })();
 {% endjavascript %}
 
